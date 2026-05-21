@@ -1004,6 +1004,24 @@ export function SeriousOracleApp() {
           <AdBanner variant="archive-inline" />
           <TodayHistory items={todayHistory} />
 
+          <section className="px-4 pb-8">
+            <div className="relative overflow-hidden rounded-[24px] border border-amber-100/16 bg-white/[0.045] p-5 shadow-[0_18px_52px_rgba(0,0,0,0.32)]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(217,190,119,0.12),transparent_32%),radial-gradient(circle_at_85%_86%,rgba(88,28,135,0.2),transparent_38%)]" />
+              <div className="relative">
+                <p className="font-serif text-[10px] font-bold tracking-[0.32em] text-amber-100/58">ABOUT CAT MIRAGE ORACLE</p>
+                <h2 className="mt-2 font-serif text-2xl font-bold text-white">猫星ミラージュ占譜とは</h2>
+                <div className="mt-3 space-y-3 text-sm leading-7 text-violet-50/76">
+                  <p>
+                    猫星ミラージュ占譜は、姓名判断の数字、星の暦、猫をモチーフにしたタロットカードを組み合わせて、今日の気分や行動のヒントを読み解くエンタメ占いです。名前や生年月日から導いた象徴と、その日に開かれた三枚のカードを重ねることで、恋愛、仕事、人間関係、自分自身の整え方を少し違う角度から眺められるように作っています。
+                  </p>
+                  <p>
+                    結果は未来を断定するものではなく、朝の気分整理、迷った時のメモ、行動を始めるきっかけとして楽しむためのものです。読んでいて心に残った言葉があれば、今日の小さな合図として受け取ってください。ただし、医療、法律、投資、契約、進路など人生上の重大な判断は、この占いだけを根拠にせず、必要に応じて専門家へ相談してください。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {false && history.length > 1 ? (
             <section className="px-4 pb-8">
               <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
