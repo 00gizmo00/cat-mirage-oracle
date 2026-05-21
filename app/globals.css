@@ -1,0 +1,842 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  background: #05030a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow-x: hidden;
+  color: #f8f4ff;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(126, 34, 206, 0.42), transparent 36rem),
+    radial-gradient(circle at 12% 24%, rgba(14, 165, 233, 0.16), transparent 18rem),
+    radial-gradient(circle at 85% 68%, rgba(244, 114, 182, 0.14), transparent 17rem),
+    #05030a;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.phone-safe {
+  min-height: 100svh;
+}
+
+.mystic-noise::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  opacity: 0.24;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(circle at center, black, transparent 72%);
+}
+
+.scanline {
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05) 0,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.oracle-flash {
+  animation: oracle-flash 0.82s ease-out both;
+}
+
+.oracle-cut-in {
+  animation: oracle-cut-in 0.72s cubic-bezier(0.18, 0.9, 0.25, 1) both;
+}
+
+.rarity-slam {
+  animation: rarity-slam 0.64s cubic-bezier(0.18, 0.9, 0.25, 1.25) both;
+}
+
+.summon-vortex {
+  opacity: 0.72;
+  background:
+    conic-gradient(
+      from 90deg,
+      transparent 0deg,
+      rgba(139, 92, 246, 0.18) 46deg,
+      transparent 78deg,
+      rgba(217, 70, 239, 0.28) 142deg,
+      transparent 190deg,
+      rgba(34, 211, 238, 0.14) 248deg,
+      transparent 320deg
+    );
+  filter: blur(10px) saturate(1.45);
+  animation: vortex-spin 1.3s linear infinite;
+}
+
+.summon-vortex-ur {
+  opacity: 1;
+  background:
+    conic-gradient(
+      from 0deg,
+      rgba(250, 204, 21, 0.32),
+      rgba(217, 70, 239, 0.32),
+      rgba(34, 211, 238, 0.26),
+      rgba(250, 204, 21, 0.32)
+    );
+  filter: blur(8px) saturate(2);
+}
+
+.screen-burst {
+  opacity: 0;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.2), transparent 55%);
+  animation: screen-burst 1.05s ease-out infinite;
+}
+
+.summon-ring,
+.ur-prism-ring {
+  opacity: 0.7;
+  background:
+    radial-gradient(circle, transparent 54%, rgba(255, 255, 255, 0.24) 55%, transparent 58%),
+    conic-gradient(from 180deg, rgba(168, 85, 247, 0), rgba(217, 70, 239, 0.75), rgba(250, 204, 21, 0.45), rgba(168, 85, 247, 0));
+  filter: drop-shadow(0 0 18px rgba(217, 70, 239, 0.65));
+  animation: prism-ring 0.9s linear infinite;
+}
+
+.ur-prism-ring {
+  opacity: 1;
+  filter: drop-shadow(0 0 24px rgba(250, 204, 21, 0.8));
+}
+
+.card-summon-burst {
+  animation: card-summon-burst 0.42s ease-in-out infinite alternate;
+}
+
+.result-card-pop {
+  transform-origin: 50% 42%;
+}
+
+.result-card-premium {
+  animation:
+    cardFlip 0.95s ease both,
+    result-premium-impact 0.78s cubic-bezier(0.18, 0.9, 0.25, 1.25) both;
+}
+
+.result-card-ur {
+  animation:
+    cardFlip 0.95s ease both,
+    result-ur-impact 1.05s cubic-bezier(0.18, 0.9, 0.25, 1.25) both,
+    result-ur-glow 1.4s ease-in-out 0.5s infinite alternate;
+}
+
+.new-card-stamp {
+  animation: new-card-stamp 0.8s cubic-bezier(0.18, 0.9, 0.25, 1.3) both;
+}
+
+.result-entry-flash {
+  z-index: 1;
+  opacity: 0;
+  background:
+    linear-gradient(115deg, transparent 16%, rgba(255, 255, 255, 0.82) 48%, transparent 72%),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.38), transparent 60%);
+  animation: result-entry-flash 0.92s ease-out both;
+}
+
+.result-prism-sweep {
+  z-index: 1;
+  opacity: 0.45;
+  background:
+    conic-gradient(
+      from 130deg,
+      transparent,
+      rgba(250, 204, 21, 0.18),
+      rgba(217, 70, 239, 0.22),
+      rgba(34, 211, 238, 0.16),
+      transparent
+    );
+  filter: blur(12px) saturate(1.8);
+  animation: result-prism-sweep 1.8s linear infinite;
+}
+
+.result-shockwave span {
+  position: absolute;
+  left: 50%;
+  top: 26%;
+  z-index: 1;
+  width: 82px;
+  height: 82px;
+  border: 2px solid rgba(253, 230, 138, 0.72);
+  border-radius: 999px;
+  box-shadow: 0 0 32px rgba(250, 204, 21, 0.62), 0 0 52px rgba(217, 70, 239, 0.38);
+  transform: translate(-50%, -50%);
+  animation: result-shockwave 1.08s ease-out both;
+}
+
+.result-shockwave span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.result-burst-pieces span {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 9px;
+  height: 24px;
+  opacity: 0;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 16px currentColor;
+  animation: result-piece-burst 1.25s ease-out both;
+}
+
+.result-card-stage {
+  position: relative;
+  overflow: hidden;
+}
+
+.result-stage-aura {
+  opacity: 0.55;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.42), transparent 28%),
+    conic-gradient(from 180deg, rgba(250, 204, 21, 0.55), rgba(217, 70, 239, 0.5), rgba(34, 211, 238, 0.35), rgba(250, 204, 21, 0.55));
+  filter: blur(18px);
+  animation: result-stage-aura 1.45s ease-in-out infinite alternate;
+}
+
+.result-stage-ring {
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  background:
+    radial-gradient(circle, transparent 58%, rgba(255, 255, 255, 0.26) 60%, transparent 64%),
+    conic-gradient(from 0deg, rgba(253, 230, 138, 0), rgba(253, 230, 138, 0.8), rgba(217, 70, 239, 0.7), rgba(34, 211, 238, 0.48), rgba(253, 230, 138, 0));
+  filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.7));
+  animation: result-stage-ring 0.9s linear infinite;
+}
+
+.result-inner-card-premium {
+  animation: result-inner-card-pop 1.05s cubic-bezier(0.18, 0.9, 0.25, 1.25) both;
+}
+
+.oracle-card-art {
+  isolation: isolate;
+}
+
+.oracle-card-art::before,
+.oracle-card-art::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+}
+
+.oracle-card-art::before {
+  z-index: 1;
+  opacity: 0.38;
+  background:
+    linear-gradient(130deg, rgba(255, 255, 255, 0.2), transparent 28%, rgba(255, 255, 255, 0.08) 52%, transparent 74%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 11px);
+  mix-blend-mode: screen;
+}
+
+.oracle-card-art::after {
+  z-index: 6;
+  border-radius: inherit;
+  box-shadow: inset 0 0 26px rgba(0, 0, 0, 0.75), inset 0 0 10px rgba(255, 255, 255, 0.14);
+}
+
+.oracle-card-art-premium {
+  animation: oracle-art-breathe 1.35s ease-in-out infinite alternate;
+}
+
+.oracle-card-art-ur {
+  animation:
+    oracle-art-breathe 1.2s ease-in-out infinite alternate,
+    oracle-art-ur-prism 2.6s linear infinite;
+}
+
+.oracle-art-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 14px 14px;
+  mask-image: radial-gradient(circle at center, black, transparent 72%);
+}
+
+.oracle-art-halo {
+  opacity: 0.22;
+  filter: blur(13px) saturate(1.4);
+  animation: oracle-art-halo 1.7s ease-in-out infinite alternate;
+}
+
+.oracle-art-ring {
+  z-index: 2;
+  border: 1px dashed rgba(255, 255, 255, 0.36);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.16);
+  animation: oracle-art-ring-spin 5.8s linear infinite;
+}
+
+.oracle-art-ring-inner {
+  border-style: solid;
+  opacity: 0.75;
+  animation-duration: 3.4s;
+  animation-direction: reverse;
+}
+
+.oracle-art-sigil {
+  z-index: 3;
+  animation: oracle-art-sigil 2.2s ease-in-out infinite;
+  text-shadow: 0 0 12px currentColor;
+}
+
+.oracle-art-main {
+  z-index: 4;
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.42));
+  animation: oracle-art-main 1.9s ease-in-out infinite alternate;
+}
+
+.oracle-art-shine {
+  z-index: 5;
+  opacity: 0;
+  background: linear-gradient(105deg, transparent 12%, rgba(255, 255, 255, 0.72) 46%, transparent 68%);
+  animation: oracle-art-shine 1.4s ease-out infinite;
+}
+
+.particle-field span {
+  position: absolute;
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 16px currentColor;
+  animation: particle-rise 1.25s ease-out infinite;
+}
+
+.spark-field span {
+  position: absolute;
+  display: block;
+  width: 12px;
+  height: 12px;
+  transform: rotate(45deg);
+  opacity: 0;
+  border: 1px solid currentColor;
+  box-shadow: 0 0 18px currentColor, inset 0 0 9px currentColor;
+  animation: spark-pop 0.72s ease-out infinite;
+}
+
+.shockwave-field span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 64px;
+  height: 64px;
+  border: 2px solid rgba(240, 171, 252, 0.62);
+  border-radius: 999px;
+  box-shadow: 0 0 30px rgba(217, 70, 239, 0.6);
+  transform: translate(-50%, -50%);
+  animation: shockwave 0.95s ease-out infinite;
+}
+
+.shockwave-field span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.shockwave-field span:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+.shockwave-field .shockwave-ur {
+  border-color: rgba(253, 230, 138, 0.85);
+  box-shadow: 0 0 38px rgba(250, 204, 21, 0.8), 0 0 54px rgba(217, 70, 239, 0.5);
+}
+
+.lightning-field span {
+  position: absolute;
+  width: 4px;
+  height: 132px;
+  opacity: 0;
+  background:
+    linear-gradient(currentColor 0 0) 0 0 / 100% 38% no-repeat,
+    linear-gradient(currentColor 0 0) 14px 36% / 100% 32% no-repeat,
+    linear-gradient(currentColor 0 0) -9px 66% / 100% 34% no-repeat;
+  clip-path: polygon(42% 0, 100% 0, 58% 38%, 100% 38%, 34% 100%, 48% 54%, 0 54%);
+  filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 22px currentColor);
+  animation: lightning-strike 0.62s steps(2, jump-none) infinite;
+}
+
+.cat-tarot-shell {
+  position: relative;
+  animation: tarot-rise 0.72s ease both;
+}
+
+.cat-tarot-shell:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.cat-tarot-shell:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.cat-tarot-card {
+  position: relative;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.42)) drop-shadow(0 0 13px rgba(217, 190, 119, 0.13));
+  animation: tarot-float 4.8s ease-in-out infinite;
+  transition:
+    transform 240ms ease,
+    filter 240ms ease;
+}
+
+.cat-tarot-shell:nth-child(2) .cat-tarot-card {
+  animation-delay: -1.2s;
+}
+
+.cat-tarot-shell:nth-child(3) .cat-tarot-card {
+  animation-delay: -2.2s;
+}
+
+.cat-tarot-shell::before {
+  position: absolute;
+  inset: 24px 14px 8px;
+  pointer-events: none;
+  content: "";
+  opacity: 0.45;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(246, 231, 194, 0.23), transparent 26%),
+    radial-gradient(circle at 35% 88%, rgba(192, 132, 252, 0.18), transparent 32%);
+  filter: blur(16px);
+}
+
+.cat-tarot-shell:hover .cat-tarot-card {
+  transform: translateY(-5px) rotateZ(-1.5deg) rotateY(5deg);
+  filter: drop-shadow(0 22px 32px rgba(0, 0, 0, 0.48)) drop-shadow(0 0 20px rgba(217, 190, 119, 0.28));
+}
+
+.tarot-modal-card {
+  animation: tarot-modal-in 220ms ease-out both;
+}
+
+.tarot-modal-card .cat-tarot-card {
+  animation: none;
+  filter: drop-shadow(0 24px 42px rgba(0, 0, 0, 0.58)) drop-shadow(0 0 26px rgba(217, 190, 119, 0.22));
+}
+
+@keyframes oracle-flash {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes oracle-cut-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-120%) skewX(-14deg);
+  }
+  22% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 1;
+    transform: translateX(0) skewX(-14deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(120%) skewX(-14deg);
+  }
+}
+
+@keyframes rarity-slam {
+  0% {
+    opacity: 0;
+    transform: scale(2.4) rotate(-8deg);
+    filter: blur(12px);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(0.86) rotate(2deg);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes vortex-spin {
+  to {
+    transform: rotate(360deg) scale(1.05);
+  }
+}
+
+@keyframes screen-burst {
+  0%,
+  68%,
+  100% {
+    opacity: 0;
+    transform: scale(0.96) rotate(0deg);
+  }
+  18% {
+    opacity: 0.9;
+    transform: scale(1.04) rotate(1deg);
+  }
+}
+
+@keyframes prism-ring {
+  to {
+    transform: rotate(-360deg) scale(1.05);
+  }
+}
+
+@keyframes card-summon-burst {
+  from {
+    filter: brightness(1) saturate(1.1);
+  }
+  to {
+    filter: brightness(1.65) saturate(1.8);
+  }
+}
+
+@keyframes result-premium-impact {
+  0% {
+    filter: brightness(2) blur(10px);
+    transform: scale(0.54) rotateZ(-7deg);
+  }
+  48% {
+    filter: brightness(1.55) blur(0);
+    transform: scale(1.08) rotateZ(2deg);
+  }
+  100% {
+    filter: brightness(1);
+    transform: scale(1) rotateZ(0);
+  }
+}
+
+@keyframes result-ur-impact {
+  0% {
+    filter: brightness(2.8) saturate(2.2) blur(14px);
+    transform: scale(0.42) rotateZ(10deg);
+  }
+  38% {
+    filter: brightness(2) saturate(2) blur(0);
+    transform: scale(1.15) rotateZ(-3deg);
+  }
+  66% {
+    transform: scale(0.97) rotateZ(1deg);
+  }
+  100% {
+    filter: brightness(1.18) saturate(1.15);
+    transform: scale(1) rotateZ(0);
+  }
+}
+
+@keyframes result-ur-glow {
+  from {
+    box-shadow: 0 0 52px rgba(250, 204, 21, 0.42), 0 0 88px rgba(192, 132, 252, 0.28);
+  }
+  to {
+    box-shadow: 0 0 78px rgba(250, 204, 21, 0.66), 0 0 118px rgba(34, 211, 238, 0.3), inset 0 0 30px rgba(255, 255, 255, 0.12);
+  }
+}
+
+@keyframes result-entry-flash {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateX(-70%) skewX(-18deg);
+  }
+  18% {
+    opacity: 1;
+  }
+  54% {
+    opacity: 0.65;
+    transform: translateX(52%) skewX(-18deg);
+  }
+}
+
+@keyframes new-card-stamp {
+  0% {
+    opacity: 0;
+    transform: scale(2.2) rotate(18deg);
+    filter: blur(10px);
+  }
+  48% {
+    opacity: 1;
+    transform: scale(0.82) rotate(-8deg);
+    filter: blur(0);
+  }
+  72% {
+    transform: scale(1.08) rotate(3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-4deg);
+  }
+}
+
+@keyframes result-prism-sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes result-shockwave {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.22);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(5.8);
+  }
+}
+
+@keyframes result-piece-burst {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-76px) translateX(22px) scale(1.35);
+  }
+}
+
+@keyframes result-stage-aura {
+  from {
+    opacity: 0.36;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 0.82;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes result-stage-ring {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes result-inner-card-pop {
+  0% {
+    opacity: 0;
+    filter: brightness(2.4) blur(8px);
+    transform: translateY(24px) scale(0.45) rotateY(80deg);
+  }
+  52% {
+    opacity: 1;
+    filter: brightness(1.6) blur(0);
+    transform: translateY(-8px) scale(1.16) rotateY(-14deg);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+    transform: translateY(0) scale(1) rotateY(0);
+  }
+}
+
+@keyframes oracle-art-breathe {
+  from {
+    filter: brightness(1) saturate(1.1);
+    transform: translateY(0) scale(1);
+  }
+  to {
+    filter: brightness(1.24) saturate(1.5);
+    transform: translateY(-2px) scale(1.025);
+  }
+}
+
+@keyframes oracle-art-ur-prism {
+  0% {
+    box-shadow: 0 0 58px rgba(250, 204, 21, 0.7), 0 0 92px rgba(34, 211, 238, 0.24);
+  }
+  33% {
+    box-shadow: 0 0 62px rgba(217, 70, 239, 0.68), 0 0 94px rgba(250, 204, 21, 0.28);
+  }
+  66% {
+    box-shadow: 0 0 62px rgba(34, 211, 238, 0.62), 0 0 94px rgba(217, 70, 239, 0.28);
+  }
+  100% {
+    box-shadow: 0 0 58px rgba(250, 204, 21, 0.7), 0 0 92px rgba(34, 211, 238, 0.24);
+  }
+}
+
+@keyframes oracle-art-halo {
+  from {
+    opacity: 0.18;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1.13);
+  }
+}
+
+@keyframes oracle-art-ring-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes oracle-art-sigil {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: translateY(0) scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.08);
+  }
+}
+
+@keyframes oracle-art-main {
+  from {
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.36));
+    transform: scale(0.98);
+  }
+  to {
+    filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.62));
+    transform: scale(1.04);
+  }
+}
+
+@keyframes oracle-art-shine {
+  0%,
+  42%,
+  100% {
+    opacity: 0;
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  62% {
+    opacity: 0.72;
+  }
+  82% {
+    opacity: 0;
+    transform: translateX(120%) skewX(-18deg);
+  }
+}
+
+@keyframes spark-pop {
+  0% {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.25);
+  }
+  34% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(135deg) scale(1.9);
+  }
+}
+
+@keyframes shockwave {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.25);
+  }
+  24% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(5.2);
+  }
+}
+
+@keyframes lightning-strike {
+  0%,
+  58%,
+  100% {
+    opacity: 0;
+    transform: scaleY(0.82) translateY(-8px);
+  }
+  12% {
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+  }
+  22% {
+    opacity: 0.28;
+  }
+}
+
+@keyframes particle-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.5);
+  }
+  22% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-130px) scale(1.4);
+  }
+}
+
+@keyframes tarot-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes tarot-float {
+  0%,
+  100% {
+    transform: translateY(0) rotateZ(-0.35deg);
+  }
+  50% {
+    transform: translateY(-5px) rotateZ(0.35deg);
+  }
+}
+
+@keyframes tarot-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

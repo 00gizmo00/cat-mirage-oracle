@@ -1,0 +1,16 @@
+[gd_scene load_steps=5 format=3 uid="uid://b37cmqnwvxcrv"]
+
+[ext_resource type="Script" uid="uid://csakpuxvpe2wq" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/stage/stage_01.tscn" id="2_stage"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/audio/sound_manager.gd" id="4_sound"]
+
+[node name="Main" type="Node" unique_id=1362407338]
+script = ExtResource("1_main")
+
+[node name="Stage01" parent="." unique_id=583293554 instance=ExtResource("2_stage")]
+
+[node name="HUD" parent="." unique_id=824155136 instance=ExtResource("3_hud")]
+
+[node name="SoundManager" type="Node" parent="."]
+script = ExtResource("4_sound")
