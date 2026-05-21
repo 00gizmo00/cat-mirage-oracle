@@ -31,9 +31,11 @@ VercelのProject Settings > Environment Variablesで以下を設定してくだ�
 
 ```bash
 NEXT_PUBLIC_SITE_URL=https://cat-mirage-oracle.vercel.app
+NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-xxxxxxxxxxxxxxxx
 ```
 
 独自ドメインを設定した後は、値を本番ドメインに変更してください。
+`NEXT_PUBLIC_ADSENSE_CLIENT` はGoogle AdSenseの審査用client IDが発行された後に設定します。未設定の場合、AdSense scriptは出力されません。
 
 ## Vercel Deploy Settings
 
@@ -73,6 +75,22 @@ NEXT_PUBLIC_SITE_URL=https://cat-mirage-oracle.vercel.app
 ```js
 localStorage.setItem("cat_mirage_ad_free", "true")
 ```
+
+## Google AdSense Review Setup
+
+AdSense審査を開始する時は、VercelのProject Settings > Environment Variablesに以下を設定してください。
+
+```bash
+NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-xxxxxxxxxxxxxxxx
+```
+
+設定後、Vercelで再デプロイしてください。再デプロイ後、トップページのHTMLに以下のscriptが出力されていることを確認します。
+
+```html
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx" crossorigin="anonymous"></script>
+```
+
+本広告ユニットIDはまだ設定しません。審査段階では `components/AdBanner.tsx` のダミー広告枠を維持し、AdSense側の指示に従ってclient IDのみ設定します。
 
 ## Legal Notes
 

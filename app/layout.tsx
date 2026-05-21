@@ -3,6 +3,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { siteConfig } from "@/lib/siteConfig";
 import "./globals.css";
 
+const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   applicationName: siteConfig.name,
@@ -46,6 +48,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <head>
+        {adsenseClient ? (
+          <script
+            async
+            crossOrigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+          />
+        ) : null}
+      </head>
       <body>
         {children}
         <SiteFooter />
