@@ -38,6 +38,7 @@ const themeOptions: { id: ReadingTheme; label: string; caption: string }[] = [
 ];
 
 const englishArcana: Record<string, string> = {
+  教皇: "THE HIEROPHANT",
   愚者: "THE FOOL",
   魔術師: "THE MAGICIAN",
   女教皇: "THE HIGH PRIESTESS",
@@ -62,6 +63,7 @@ const englishArcana: Record<string, string> = {
 };
 
 const tarotImageByArcana: Record<string, string> = {
+  教皇: "/tarot/hierophant-cat.png",
   愚者: "/tarot/fool-cat.png",
   魔術師: "/tarot/magician-cat.png",
   女教皇: "/tarot/high-priestess-cat.png",
@@ -93,6 +95,12 @@ type TarotMeaning = {
 };
 
 const tarotMeanings: Record<string, TarotMeaning> = {
+  "THE HIEROPHANT": {
+    essence: "受け継がれてきた知恵と、信頼できる導きのカードです。ひとりで答えを抱え込まず、先人の言葉や基本に戻ることで道が見えてきます。",
+    light: "迷っていたことに、経験者の助言や昔からの型が安心感を与えてくれます。礼儀や約束を大切にすると、周囲との信頼も整いやすい日です。",
+    shadow: "正しさや常識に寄りすぎると、自分の本音を小さく扱ってしまうかもしれません。守るべき型と、変えてよい型を分けて考えてください。",
+    advice: "今日は信頼できる人の意見をひとつ聞き、すぐに結論を出さず、自分の感覚と照らし合わせてから選んでください。",
+  },
   "THE FOOL": {
     essence: "まだ名前のついていない始まり。根拠よりも直感が先に道を知っています。",
     light: "予定外の誘いや小さな寄り道が、停滞していた気分をほどいてくれます。",

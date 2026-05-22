@@ -51,6 +51,7 @@ const themeSeeds: Record<ReadingTheme, string[]> = {
 };
 
 const arcana = [
+  ["教皇", "導き"],
   ["愚者", "はじまり"],
   ["魔術師", "発動"],
   ["女教皇", "直感"],
@@ -148,6 +149,7 @@ function getNameNumber(name: string, birthDate: string) {
 
 function getTarotImageSrc(arcanaName: string) {
   const imageMap: Record<string, string> = {
+    教皇: "/tarot/hierophant-cat.png",
     愚者: "/tarot/fool-cat.png",
     魔術師: "/tarot/magician-cat.png",
     女教皇: "/tarot/high-priestess-cat.png",
