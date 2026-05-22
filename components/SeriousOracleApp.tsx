@@ -461,7 +461,7 @@ function TarotCardModal({ card, onClose }: { card: TarotDraw; onClose: () => voi
   );
 }
 
-function SharePreview({ reading }: { reading: SeriousReading }) {
+function LegacySharePreview({ reading }: { reading: SeriousReading }) {
   return (
     <section className="relative overflow-hidden rounded-[24px] border border-amber-100/25 bg-[#060511] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.42)]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(217,190,119,0.2),transparent_34%),radial-gradient(circle_at_18%_82%,rgba(147,51,234,0.22),transparent_38%)]" />
@@ -486,6 +486,59 @@ function SharePreview({ reading }: { reading: SeriousReading }) {
         <p className="font-serif text-[10px] font-bold tracking-[0.2em] text-amber-100/54">{reading.themeLabel}</p>
         <p className="mt-1 text-lg font-black leading-7 text-white">{reading.headline}</p>
         <p className="mt-2 line-clamp-3 text-xs font-bold leading-6 text-violet-50/70">{reading.affirmation}</p>
+        <div className="mt-4 flex items-center justify-between gap-3 border-t border-amber-100/12 pt-3">
+          <p className="text-[10px] font-bold text-white/40">{formatReadingDate(reading.createdAt)}</p>
+          <p className="font-serif text-[10px] font-bold tracking-[0.2em] text-amber-100/54">MOON / STARS / CAT TAROT</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SharePreview({ reading }: { reading: SeriousReading }) {
+  const mainCard = reading.tarot[1] ?? reading.tarot[0];
+
+  return (
+    <section className="relative overflow-hidden rounded-[28px] border border-amber-100/30 bg-[#05040d] p-4 shadow-[0_28px_80px_rgba(0,0,0,0.48)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-8%,rgba(250,204,21,0.24),transparent_35%),radial-gradient(circle_at_16%_84%,rgba(147,51,234,0.26),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_36%,rgba(0,0,0,0.34))]" />
+      <div className="pointer-events-none absolute inset-[8px] rounded-[22px] border border-amber-100/24" />
+      <div className="pointer-events-none absolute inset-[14px] rounded-[17px] border border-amber-100/10" />
+      <div className="relative">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="font-serif text-[10px] font-bold tracking-[0.36em] text-amber-100/58">SHARE ORACLE CARD</p>
+            <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">猫星ミラージュ占譜</h3>
+            <p className="mt-1 text-[11px] font-bold text-violet-50/48">今日の鑑定証</p>
+          </div>
+          <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full border border-amber-100/35 bg-amber-100/10 shadow-[0_0_34px_rgba(217,190,119,0.18)]">
+            <div className="text-center">
+              <p className="text-[9px] font-bold tracking-[0.16em] text-amber-100/50">SCORE</p>
+              <p className="text-2xl font-black text-amber-100">{reading.score}</p>
+            </div>
+          </div>
+        </div>
+
+        {mainCard ? (
+          <div className="mx-auto mt-4 w-[56%] max-w-[180px] rounded-[18px] border border-amber-100/20 bg-black/38 p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+            <TarotCard card={mainCard} />
+          </div>
+        ) : null}
+
+        <div className="mt-4 rounded-2xl border border-white/10 bg-black/28 p-3 text-center">
+          <p className="font-serif text-[10px] font-bold tracking-[0.22em] text-amber-100/54">{reading.themeLabel}</p>
+          <p className="mt-1 text-xl font-black leading-7 text-white">{reading.headline}</p>
+          <p className="mt-2 text-xs font-bold leading-6 text-violet-50/68">{reading.affirmation}</p>
+        </div>
+
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {reading.tarot.map((card) => (
+            <div className="rounded-2xl border border-amber-100/14 bg-white/[0.045] p-2 text-center" key={`${reading.id}-share-${card.position}`}>
+              <p className="font-serif text-[9px] font-bold tracking-[0.12em] text-amber-100/45">{card.position}</p>
+              <p className="mt-1 truncate text-[11px] font-black text-white/82">{card.arcana}</p>
+            </div>
+          ))}
+        </div>
+
         <div className="mt-4 flex items-center justify-between gap-3 border-t border-amber-100/12 pt-3">
           <p className="text-[10px] font-bold text-white/40">{formatReadingDate(reading.createdAt)}</p>
           <p className="font-serif text-[10px] font-bold tracking-[0.2em] text-amber-100/54">MOON / STARS / CAT TAROT</p>
@@ -1019,6 +1072,34 @@ export function SeriousOracleApp() {
                   </p>
                 </div>
               </div>
+            </div>
+          </section>
+
+          <section className="px-4 pb-8">
+            <div className="grid gap-3">
+              {[
+                {
+                  title: "姓名判断の見方",
+                  body: "名前から導く数は、性格を決めつけるものではなく、言葉の響きや印象を整理するための象徴として扱っています。自分らしい選び方、無理をしやすい場面、気持ちが整いやすい方向を知るための小さな地図として読んでください。",
+                },
+                {
+                  title: "星の暦の使い方",
+                  body: "星の暦は、その日の空気感を読むための背景です。強く進めたい日、少し整えたい日、人との距離を見直したい日など、日々のリズムを意識することで、予定や気分に余白を作りやすくなります。",
+                },
+                {
+                  title: "猫タロットの読み方",
+                  body: "三枚の猫タロットは、過去・現在・近未来の流れを物語のようにつなげて表示します。カードの意味を正解として受け取るより、今の自分に引っかかる言葉や絵柄を見つけることを大切にしています。",
+                },
+                {
+                  title: "毎日の気分整理に",
+                  body: "朝に一度引いて今日の合図を決めたり、夜に保存した鑑定を読み返して一日を振り返ったりできます。迷いが大きい時ほど、占いだけで決めず、現実の情報や信頼できる人の意見と合わせて使ってください。",
+                },
+              ].map((item) => (
+                <article className="rounded-[22px] border border-white/10 bg-white/[0.045] p-4" key={item.title}>
+                  <h3 className="font-serif text-lg font-bold text-amber-50">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-7 text-violet-50/72">{item.body}</p>
+                </article>
+              ))}
             </div>
           </section>
 
