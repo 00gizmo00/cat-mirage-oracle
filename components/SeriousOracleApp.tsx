@@ -476,9 +476,17 @@ function LegacySharePreview({ reading }: { reading: SeriousReading }) {
       <div className="pointer-events-none absolute inset-[9px] rounded-[18px] border border-amber-100/22" />
       <div className="relative">
         <div className="flex items-start justify-between gap-3">
-          <div>
+          <div className="flex min-w-0 items-start gap-3">
+            <img
+              alt=""
+              className="h-14 w-14 shrink-0 rounded-full border border-amber-100/28 object-cover shadow-[0_0_24px_rgba(217,190,119,0.16)]"
+              draggable={false}
+              src="/brand/cat-mirage-logo.png"
+            />
+            <div className="min-w-0">
             <p className="font-serif text-[10px] font-bold tracking-[0.34em] text-amber-100/58">SHARE ORACLE</p>
             <h3 className="mt-1 font-serif text-xl font-bold leading-tight text-white">猫星ミラージュ占譜</h3>
+            </div>
           </div>
           <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-amber-100/30 bg-amber-100/10">
             <span className="text-xl font-black text-amber-100">{reading.score}</span>
@@ -513,10 +521,18 @@ function SharePreview({ reading }: { reading: SeriousReading }) {
       <div className="pointer-events-none absolute inset-[14px] rounded-[17px] border border-amber-100/10" />
       <div className="relative">
         <div className="flex items-start justify-between gap-3">
-          <div>
+          <div className="flex min-w-0 items-start gap-3">
+            <img
+              alt=""
+              className="h-14 w-14 shrink-0 rounded-full border border-amber-100/28 object-cover shadow-[0_0_24px_rgba(217,190,119,0.16)]"
+              draggable={false}
+              src="/brand/cat-mirage-logo.png"
+            />
+            <div className="min-w-0">
             <p className="font-serif text-[10px] font-bold tracking-[0.36em] text-amber-100/58">SHARE ORACLE CARD</p>
             <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">猫星ミラージュ占譜</h3>
             <p className="mt-1 text-[11px] font-bold text-violet-50/48">今日の鑑定証</p>
+            </div>
           </div>
           <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full border border-amber-100/35 bg-amber-100/10 shadow-[0_0_34px_rgba(217,190,119,0.18)]">
             <div className="text-center">
@@ -948,6 +964,14 @@ export function SeriousOracleApp() {
           </div>
 
           <header className="px-5 pb-4 pt-4 text-center">
+            <div className="mx-auto mb-3 w-[min(68vw,230px)] overflow-hidden rounded-full border border-amber-100/24 bg-black/35 p-1.5 shadow-[0_0_42px_rgba(217,190,119,0.16)]">
+              <img
+                alt="猫星ミラージュ占譜のロゴ"
+                className="aspect-square w-full rounded-full object-cover"
+                draggable={false}
+                src="/brand/cat-mirage-logo.png"
+              />
+            </div>
             <p className="font-serif text-[10px] font-bold tracking-[0.42em] text-amber-100/50">NAME / STARS / CAT TAROT</p>
             <h1 className="mt-1 font-serif text-3xl font-bold tracking-[0.03em] text-white drop-shadow-[0_0_22px_rgba(217,190,119,0.22)]">
               猫星ミラージュ占譜

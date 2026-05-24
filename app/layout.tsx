@@ -4,6 +4,7 @@ import { siteConfig } from "@/lib/siteConfig";
 import "./globals.css";
 
 const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+const logoImage = "/brand/cat-mirage-logo.png";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -23,11 +24,24 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     locale: "ja_JP",
     type: "website",
+    images: [
+      {
+        url: logoImage,
+        width: 1024,
+        height: 1024,
+        alt: siteConfig.name,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
+    images: [logoImage],
+  },
+  icons: {
+    icon: logoImage,
+    apple: logoImage,
   },
   robots: {
     index: true,
