@@ -283,6 +283,30 @@ function buildShareText(reading: SeriousReading) {
   ].join("\n");
 }
 
+function buildXShareUrl(reading: SeriousReading) {
+  const url = typeof window !== "undefined" ? window.location.origin : "https://cat-mirage-oracle.vercel.app";
+  const text = [
+    buildShareText(reading),
+    "",
+    "#猫星ミラージュ占譜 #猫タロット #占い",
+  ].join("\n");
+  const params = new URLSearchParams({
+    text,
+    url,
+  });
+
+  return `https://twitter.com/intent/tweet?${params.toString()}`;
+}
+
+function openXShare(reading: SeriousReading) {
+  const shareWindow = window.open(buildXShareUrl(reading), "_blank", "noopener,noreferrer");
+  if (shareWindow) {
+    shareWindow.opener = null;
+    return true;
+  }
+  return false;
+}
+
 async function shareReadingText(reading: SeriousReading) {
   const text = buildShareText(reading);
   if ("share" in window.navigator && typeof window.navigator.share === "function") {
@@ -593,6 +617,11 @@ function HistoryReadingModal({ reading, onClose }: { reading: SeriousReading; on
     window.setTimeout(() => setShareStatus(""), 2200);
   };
 
+  const shareSavedReadingToX = () => {
+    setShareStatus(openXShare(reading) ? "Xの投稿画面を開きました" : "X投稿画面を開けませんでした");
+    window.setTimeout(() => setShareStatus(""), 2200);
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/84 px-4 py-6 backdrop-blur-md" role="dialog" aria-modal="true" aria-label="保存した鑑定記録">
       <button className="fixed inset-0 cursor-default" onClick={onClose} type="button" aria-label="閉じる" />
@@ -653,13 +682,20 @@ function HistoryReadingModal({ reading, onClose }: { reading: SeriousReading; on
               <p className="mt-2 text-xs leading-6 text-violet-50/62">{reading.affirmation}</p>
             </section>
 
-            <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="mt-4 grid grid-cols-3 gap-2">
               <button
                 className="rounded-2xl border border-cyan-100/25 bg-cyan-100/[0.08] px-3 py-3 text-sm font-black text-cyan-50 shadow-[0_0_22px_rgba(125,211,252,0.1)] transition active:scale-[0.98]"
                 onClick={shareSavedReading}
                 type="button"
               >
                 SNS用に共有
+              </button>
+              <button
+                className="rounded-2xl border border-white/20 bg-white/[0.08] px-2 py-3 text-xs font-black text-white shadow-[0_0_22px_rgba(255,255,255,0.08)] transition active:scale-[0.98]"
+                onClick={shareSavedReadingToX}
+                type="button"
+              >
+                Xで投稿
               </button>
               <button
                 className="rounded-2xl border border-amber-100/25 bg-black/34 px-3 py-3 text-sm font-black text-amber-50 transition active:scale-[0.98]"
@@ -752,6 +788,11 @@ function ReadingResult({ reading, onSave }: { reading: SeriousReading; onSave: (
     } catch {
       setShareStatus("共有をキャンセルしました");
     }
+    window.setTimeout(() => setShareStatus(""), 2200);
+  };
+
+  const shareReadingToX = () => {
+    setShareStatus(openXShare(reading) ? "Xの投稿画面を開きました" : "X投稿画面を開けませんでした");
     window.setTimeout(() => setShareStatus(""), 2200);
   };
 
@@ -854,7 +895,7 @@ function ReadingResult({ reading, onSave }: { reading: SeriousReading; onSave: (
       <AdBanner variant="result-inline" />
 
       <section className="rounded-[22px] border border-white/10 bg-white/[0.05] p-4">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           <button
             className="rounded-2xl border border-amber-100/35 bg-amber-100/12 px-3 py-3 text-sm font-black text-amber-50 shadow-[0_0_22px_rgba(217,190,119,0.12)] transition active:scale-[0.98]"
             onClick={saveReading}
@@ -868,6 +909,13 @@ function ReadingResult({ reading, onSave }: { reading: SeriousReading; onSave: (
             type="button"
           >
             SNS用に共有
+          </button>
+          <button
+            className="rounded-2xl border border-white/20 bg-white/[0.08] px-2 py-3 text-xs font-black text-white shadow-[0_0_22px_rgba(255,255,255,0.08)] transition active:scale-[0.98]"
+            onClick={shareReadingToX}
+            type="button"
+          >
+            Xで投稿
           </button>
         </div>
         {saveStatus || shareStatus ? (
