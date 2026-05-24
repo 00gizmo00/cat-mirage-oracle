@@ -307,6 +307,207 @@ function openXShare(reading: SeriousReading) {
   return false;
 }
 
+function loadCanvasImage(src: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+    image.src = new URL(src, window.location.origin).toString();
+  });
+}
+
+function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
+  const safeRadius = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + safeRadius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, safeRadius);
+  ctx.arcTo(x + width, y + height, x, y + height, safeRadius);
+  ctx.arcTo(x, y + height, x, y, safeRadius);
+  ctx.arcTo(x, y, x + width, y, safeRadius);
+  ctx.closePath();
+}
+
+function drawCoverImage(ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, width: number, height: number) {
+  const imageRatio = image.width / image.height;
+  const targetRatio = width / height;
+  const drawWidth = imageRatio > targetRatio ? height * imageRatio : width;
+  const drawHeight = imageRatio > targetRatio ? height : width / imageRatio;
+  ctx.drawImage(image, x + (width - drawWidth) / 2, y + (height - drawHeight) / 2, drawWidth, drawHeight);
+}
+
+function drawWrappedText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number,
+  maxLines: number,
+) {
+  let line = "";
+  let lines = 0;
+  const chars = Array.from(text);
+  let consumed = 0;
+
+  for (let index = 0; index < chars.length; index += 1) {
+    const char = chars[index];
+    const nextLine = line + char;
+    if (ctx.measureText(nextLine).width > maxWidth && line) {
+      ctx.fillText(line, x, y);
+      y += lineHeight;
+      lines += 1;
+      line = char;
+      consumed = index;
+      if (lines >= maxLines - 1) {
+        consumed = index;
+        break;
+      }
+    } else {
+      line = nextLine;
+      consumed = index + 1;
+    }
+  }
+
+  if (line && lines < maxLines) {
+    const remaining = chars.length - consumed;
+    ctx.fillText(remaining > 0 ? `${line.slice(0, Math.max(0, line.length - 1))}…` : line, x, y);
+    y += lineHeight;
+  }
+
+  return y;
+}
+
+async function createShareCardBlob(reading: SeriousReading) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1080;
+  canvas.height = 1350;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas is not supported");
+
+  const mainCard = reading.tarot[1] ?? reading.tarot[0];
+  const logoPromise = loadCanvasImage("/brand/cat-mirage-logo.png");
+  const mainCardPromise = mainCard ? loadCanvasImage(mainCard.imageSrc || tarotImageByArcana[arcanaKey(mainCard.arcana)] || "") : null;
+  const [logo, mainImage] = await Promise.all([logoPromise, mainCardPromise]);
+
+  const background = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  background.addColorStop(0, "#03040d");
+  background.addColorStop(0.46, "#10102b");
+  background.addColorStop(1, "#05030a");
+  ctx.fillStyle = background;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const glow = ctx.createRadialGradient(540, 260, 20, 540, 260, 620);
+  glow.addColorStop(0, "rgba(235, 195, 92, 0.34)");
+  glow.addColorStop(0.45, "rgba(88, 28, 135, 0.22)");
+  glow.addColorStop(1, "rgba(3, 4, 13, 0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = "rgba(237, 201, 117, 0.54)";
+  ctx.lineWidth = 4;
+  roundedRect(ctx, 42, 42, 996, 1266, 42);
+  ctx.stroke();
+  ctx.strokeStyle = "rgba(237, 201, 117, 0.2)";
+  ctx.lineWidth = 2;
+  roundedRect(ctx, 68, 68, 944, 1214, 30);
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(250, 226, 154, 0.8)";
+  for (let index = 0; index < 90; index += 1) {
+    const x = 80 + ((index * 97) % 920);
+    const y = 90 + ((index * 173) % 1120);
+    const radius = 1.2 + (index % 4) * 0.8;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.save();
+  roundedRect(ctx, 434, 72, 212, 212, 106);
+  ctx.clip();
+  drawCoverImage(ctx, logo, 434, 72, 212, 212);
+  ctx.restore();
+  ctx.strokeStyle = "rgba(237, 201, 117, 0.62)";
+  ctx.lineWidth = 4;
+  roundedRect(ctx, 434, 72, 212, 212, 106);
+  ctx.stroke();
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#f8e7b0";
+  ctx.font = "700 34px serif";
+  ctx.fillText("猫星ミラージュ占譜", 540, 336);
+  ctx.fillStyle = "rgba(248, 231, 176, 0.62)";
+  ctx.font = "700 18px serif";
+  ctx.fillText("NEKOSEI MIRAGE ORACLE", 540, 370);
+
+  ctx.save();
+  roundedRect(ctx, 340, 414, 400, 600, 24);
+  ctx.clip();
+  if (mainImage) drawCoverImage(ctx, mainImage, 340, 414, 400, 600);
+  ctx.restore();
+  ctx.strokeStyle = "rgba(237, 201, 117, 0.7)";
+  ctx.lineWidth = 5;
+  roundedRect(ctx, 340, 414, 400, 600, 24);
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(0, 0, 0, 0.58)";
+  roundedRect(ctx, 104, 1038, 872, 182, 28);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(237, 201, 117, 0.28)";
+  ctx.lineWidth = 2;
+  roundedRect(ctx, 104, 1038, 872, 182, 28);
+  ctx.stroke();
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "rgba(248, 231, 176, 0.72)";
+  ctx.font = "700 24px serif";
+  ctx.fillText(`${reading.themeLabel} / SCORE ${reading.score}`, 540, 1088);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "900 34px sans-serif";
+  drawWrappedText(ctx, reading.headline, 540, 1138, 760, 44, 2);
+
+  ctx.fillStyle = "rgba(238, 230, 255, 0.76)";
+  ctx.font = "700 24px sans-serif";
+  ctx.textAlign = "left";
+  drawWrappedText(ctx, reading.affirmation, 164, 1236, 752, 34, 2);
+
+  ctx.fillStyle = "rgba(248, 231, 176, 0.58)";
+  ctx.font = "700 20px serif";
+  ctx.textAlign = "center";
+  ctx.fillText("#猫星ミラージュ占譜  #猫タロット", 540, 1272);
+
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob);
+      else reject(new Error("Failed to create PNG"));
+    }, "image/png");
+  });
+}
+
+async function shareReadingImage(reading: SeriousReading) {
+  const blob = await createShareCardBlob(reading);
+  const file = new File([blob], `cat-mirage-oracle-${reading.id}.png`, { type: "image/png" });
+
+  if ("canShare" in navigator && navigator.canShare({ files: [file] })) {
+    await navigator.share({
+      files: [file],
+      title: "猫星ミラージュ占譜",
+      text: "今日の猫タロット鑑定カードです。",
+    });
+    return "shared";
+  }
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = file.name;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  return "downloaded";
+}
+
 async function shareReadingText(reading: SeriousReading) {
   const text = buildShareText(reading);
   if ("share" in window.navigator && typeof window.navigator.share === "function") {
@@ -622,6 +823,16 @@ function HistoryReadingModal({ reading, onClose }: { reading: SeriousReading; on
     window.setTimeout(() => setShareStatus(""), 2200);
   };
 
+  const shareSavedReadingImage = async () => {
+    try {
+      const result = await shareReadingImage(reading);
+      setShareStatus(result === "shared" ? "画像共有を開きました" : "PNG画像を保存しました");
+    } catch {
+      setShareStatus("画像を作成できませんでした");
+    }
+    window.setTimeout(() => setShareStatus(""), 2600);
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/84 px-4 py-6 backdrop-blur-md" role="dialog" aria-modal="true" aria-label="保存した鑑定記録">
       <button className="fixed inset-0 cursor-default" onClick={onClose} type="button" aria-label="閉じる" />
@@ -682,7 +893,7 @@ function HistoryReadingModal({ reading, onClose }: { reading: SeriousReading; on
               <p className="mt-2 text-xs leading-6 text-violet-50/62">{reading.affirmation}</p>
             </section>
 
-            <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="mt-4 grid grid-cols-2 gap-2">
               <button
                 className="rounded-2xl border border-cyan-100/25 bg-cyan-100/[0.08] px-3 py-3 text-sm font-black text-cyan-50 shadow-[0_0_22px_rgba(125,211,252,0.1)] transition active:scale-[0.98]"
                 onClick={shareSavedReading}
@@ -696,6 +907,13 @@ function HistoryReadingModal({ reading, onClose }: { reading: SeriousReading; on
                 type="button"
               >
                 Xで投稿
+              </button>
+              <button
+                className="rounded-2xl border border-amber-100/30 bg-amber-100/[0.09] px-2 py-3 text-xs font-black text-amber-50 shadow-[0_0_22px_rgba(217,190,119,0.1)] transition active:scale-[0.98]"
+                onClick={shareSavedReadingImage}
+                type="button"
+              >
+                画像保存
               </button>
               <button
                 className="rounded-2xl border border-amber-100/25 bg-black/34 px-3 py-3 text-sm font-black text-amber-50 transition active:scale-[0.98]"
@@ -794,6 +1012,16 @@ function ReadingResult({ reading, onSave }: { reading: SeriousReading; onSave: (
   const shareReadingToX = () => {
     setShareStatus(openXShare(reading) ? "Xの投稿画面を開きました" : "X投稿画面を開けませんでした");
     window.setTimeout(() => setShareStatus(""), 2200);
+  };
+
+  const shareReadingAsImage = async () => {
+    try {
+      const result = await shareReadingImage(reading);
+      setShareStatus(result === "shared" ? "画像共有を開きました" : "PNG画像を保存しました");
+    } catch {
+      setShareStatus("画像を作成できませんでした");
+    }
+    window.setTimeout(() => setShareStatus(""), 2600);
   };
 
   return (
@@ -895,7 +1123,7 @@ function ReadingResult({ reading, onSave }: { reading: SeriousReading; onSave: (
       <AdBanner variant="result-inline" />
 
       <section className="rounded-[22px] border border-white/10 bg-white/[0.05] p-4">
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           <button
             className="rounded-2xl border border-amber-100/35 bg-amber-100/12 px-3 py-3 text-sm font-black text-amber-50 shadow-[0_0_22px_rgba(217,190,119,0.12)] transition active:scale-[0.98]"
             onClick={saveReading}
@@ -916,6 +1144,13 @@ function ReadingResult({ reading, onSave }: { reading: SeriousReading; onSave: (
             type="button"
           >
             Xで投稿
+          </button>
+          <button
+            className="rounded-2xl border border-amber-100/30 bg-amber-100/[0.09] px-2 py-3 text-xs font-black text-amber-50 shadow-[0_0_22px_rgba(217,190,119,0.1)] transition active:scale-[0.98]"
+            onClick={shareReadingAsImage}
+            type="button"
+          >
+            画像保存
           </button>
         </div>
         {saveStatus || shareStatus ? (
