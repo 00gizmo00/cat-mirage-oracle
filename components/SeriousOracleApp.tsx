@@ -87,6 +87,8 @@ const tarotImageByArcana: Record<string, string> = {
   世界: "/tarot/world-cat.png",
 };
 
+const majorArcanaKeys = Object.keys(englishArcana);
+
 type TarotMeaning = {
   essence: string;
   light: string;
@@ -561,6 +563,20 @@ function nextStreak(previous: DailyStreak | null, todayKey: string): DailyStreak
 
 function arcanaKey(arcana: string) {
   return Object.keys(englishArcana).find((key) => arcana.includes(key)) ?? arcana;
+}
+
+function createCatalogCard(key: string): TarotDraw {
+  const english = englishArcana[key] ?? key.toUpperCase();
+  const meaning = tarotMeanings[english] ?? fallbackMeaning;
+
+  return {
+    arcana: key,
+    keyword: meaning.essence,
+    position: "大アルカナ",
+    text: meaning.light,
+    imageSeed: 0,
+    imageSrc: tarotImageByArcana[key] ?? "",
+  };
 }
 
 function TarotCard({ card }: { card: TarotDraw }) {
@@ -1057,6 +1073,106 @@ function OracleBook({ items, todayKey }: { items: SeriousReading[]; todayKey: st
   );
 }
 
+function TarotCatalog() {
+  const [isCatalogOpen, setIsCatalogOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<TarotDraw | null>(null);
+  const previewCards = majorArcanaKeys.slice(0, 4).map(createCatalogCard);
+
+  return (
+    <section className="px-4 pb-4">
+      <div className="relative overflow-hidden rounded-[24px] border border-amber-100/14 bg-white/[0.045] p-4 shadow-[0_18px_48px_rgba(0,0,0,0.24)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_24%_10%,rgba(217,190,119,0.12),transparent_32%),radial-gradient(circle_at_90%_90%,rgba(88,28,135,0.2),transparent_38%)]" />
+        <div className="relative">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-amber-100/55">CAT TAROT LIBRARY</p>
+              <h2 className="mt-1 text-lg font-black text-white">猫タロット大アルカナ図鑑</h2>
+              <p className="mt-1 text-[11px] font-bold text-white/42">22枚のカード意味と絵柄を確認できます</p>
+            </div>
+            <button
+              className="shrink-0 rounded-full border border-amber-100/30 bg-amber-100/[0.1] px-4 py-2 text-xs font-black text-amber-50 shadow-[0_0_24px_rgba(217,190,119,0.12)] transition active:scale-[0.98]"
+              onClick={() => setIsCatalogOpen(true)}
+              type="button"
+            >
+              開く
+            </button>
+          </div>
+          <div className="mt-3 grid grid-cols-4 gap-2">
+            {previewCards.map((card) => (
+              <button
+                className="rounded-xl border border-amber-100/16 bg-black/30 p-1 transition active:scale-[0.98]"
+                key={card.arcana}
+                onClick={() => setSelectedCard(card)}
+                type="button"
+                aria-label={`${card.arcana}を表示`}
+              >
+                <TarotCard card={card} />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {isCatalogOpen ? (
+        <div className="fixed inset-0 z-40 overflow-y-auto bg-black/84 px-4 py-6 backdrop-blur-md" role="dialog" aria-modal="true" aria-label="猫タロット大アルカナ図鑑">
+          <button className="fixed inset-0 cursor-default" onClick={() => setIsCatalogOpen(false)} type="button" aria-label="図鑑を閉じる" />
+          <div className="relative z-10 mx-auto w-full max-w-[390px] pb-8">
+            <div className="relative overflow-hidden rounded-[28px] border border-amber-100/24 bg-[#080611]/96 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.58)]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(217,190,119,0.18),transparent_34%),radial-gradient(circle_at_18%_86%,rgba(88,28,135,0.22),transparent_40%)]" />
+              <div className="pointer-events-none absolute inset-[9px] rounded-[21px] border border-amber-100/18" />
+              <div className="relative">
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-serif text-[10px] font-bold tracking-[0.34em] text-amber-100/54">CAT TAROT LIBRARY</p>
+                    <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">大アルカナ図鑑</h3>
+                    <p className="mt-1 text-[11px] font-bold text-white/42">全22枚の猫タロット</p>
+                  </div>
+                  <button
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-amber-100/25 bg-black/50 text-xl leading-none text-amber-50 shadow-[0_0_22px_rgba(217,190,119,0.18)]"
+                    onClick={() => setIsCatalogOpen(false)}
+                    type="button"
+                    aria-label="図鑑を閉じる"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div className="max-h-[70svh] grid grid-cols-2 gap-3 overflow-y-auto pr-1">
+                  {majorArcanaKeys.map((key, index) => {
+                    const card = createCatalogCard(key);
+                    const english = englishArcana[key] ?? key.toUpperCase();
+                    const meaning = tarotMeanings[english] ?? fallbackMeaning;
+
+                    return (
+                      <button
+                        className="rounded-2xl border border-white/10 bg-black/24 p-2 text-left transition active:scale-[0.99]"
+                        key={key}
+                        onClick={() => setSelectedCard(card)}
+                        type="button"
+                        aria-label={`${key}を開く`}
+                      >
+                        <div className="rounded-xl border border-amber-100/16 bg-black/35 p-1">
+                          <TarotCard card={card} />
+                        </div>
+                        <p className="mt-2 font-serif text-[9px] font-bold tracking-[0.16em] text-amber-100/45">
+                          {String(index).padStart(2, "0")} / {english}
+                        </p>
+                        <h4 className="mt-1 truncate text-sm font-black text-white">{key}</h4>
+                        <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-violet-50/58">{meaning.essence}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {selectedCard ? <TarotCardModal card={selectedCard} onClose={() => setSelectedCard(null)} /> : null}
+    </section>
+  );
+}
+
 function ReadingResult({ reading, onSave }: { reading: SeriousReading; onSave: (reading: SeriousReading) => void }) {
   const [selectedCard, setSelectedCard] = useState<TarotDraw | null>(null);
   const [saveStatus, setSaveStatus] = useState("");
@@ -1452,6 +1568,7 @@ export function SeriousOracleApp() {
 
           <AdBanner variant="archive-inline" />
           <OracleBook items={history} todayKey={todayKey} />
+          <TarotCatalog />
 
           <section className="px-4 pb-8">
             <div className="relative overflow-hidden rounded-[24px] border border-amber-100/16 bg-white/[0.045] p-5 shadow-[0_18px_52px_rgba(0,0,0,0.32)]">
