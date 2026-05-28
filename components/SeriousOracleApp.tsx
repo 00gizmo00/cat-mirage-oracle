@@ -960,11 +960,13 @@ function HistoryReadingModal({ reading, onClose }: { reading: SeriousReading; on
 }
 
 function OracleBook({ items, todayKey }: { items: SeriousReading[]; todayKey: string }) {
+  const [isBookOpen, setIsBookOpen] = useState(false);
   const [selectedHistory, setSelectedHistory] = useState<SeriousReading | null>(null);
+  const latest = items[0];
 
   if (items.length === 0) {
     return (
-      <section className="px-4 pb-8">
+      <section className="px-4 pb-4">
         <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4 text-center">
           <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/55">ORACLE BOOK</p>
           <h2 className="mt-1 text-lg font-black text-white">猫星占い帳</h2>
@@ -975,40 +977,81 @@ function OracleBook({ items, todayKey }: { items: SeriousReading[]; todayKey: st
   }
 
   return (
-    <section className="px-4 pb-8">
-      <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
-        <div className="flex items-end justify-between gap-3">
+    <section className="px-4 pb-4">
+      <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4 shadow-[0_18px_48px_rgba(0,0,0,0.24)]">
+        <div className="flex items-center justify-between gap-3">
           <div>
             <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/55">ORACLE BOOK</p>
             <h2 className="mt-1 text-lg font-black text-white">猫星占い帳</h2>
-            <p className="mt-1 text-[11px] font-bold text-white/42">保存した鑑定をあとから読み返せます</p>
+            <p className="mt-1 line-clamp-1 text-[11px] font-bold text-white/42">
+              最新: {latest.themeLabel} ・ {formatReadingDate(latest.createdAt)}
+            </p>
           </div>
-          <p className="rounded-full border border-cyan-100/15 bg-cyan-100/[0.06] px-3 py-1 text-[10px] font-black text-cyan-50/70">{items.length}件</p>
-        </div>
-        <div className="mt-3 space-y-2">
-          {items.map((item) => (
+          <div className="text-right">
+            <p className="mb-2 rounded-full border border-cyan-100/15 bg-cyan-100/[0.06] px-3 py-1 text-[10px] font-black text-cyan-50/70">{items.length}件</p>
             <button
-              className="w-full rounded-2xl border border-white/10 bg-black/24 p-3 text-left transition active:scale-[0.99]"
-              key={item.id}
-              onClick={() => setSelectedHistory(item)}
+              className="rounded-full border border-amber-100/30 bg-amber-100/[0.1] px-4 py-2 text-xs font-black text-amber-50 shadow-[0_0_24px_rgba(217,190,119,0.12)] transition active:scale-[0.98]"
+              onClick={() => setIsBookOpen(true)}
               type="button"
-              aria-label={`保存した鑑定を開く ${item.themeLabel}`}
             >
-              <div className="flex items-center justify-between gap-3">
-                <p className="truncate text-sm font-black text-white">{item.themeLabel}</p>
-                <div className="flex shrink-0 items-center gap-1.5">
-                  {item.dateKey === todayKey ? (
-                    <span className="rounded-full border border-amber-100/20 bg-amber-100/[0.08] px-2 py-0.5 text-[9px] font-black text-amber-50/70">今日</span>
-                  ) : null}
-                  <p className="text-[10px] font-bold text-white/38">{formatReadingDate(item.createdAt)}</p>
-                </div>
-              </div>
-              <p className="mt-1 line-clamp-1 text-[11px] font-bold text-amber-100/58">{getCardLine(item)}</p>
-              <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/50">{item.summary}</p>
+              開く
             </button>
-          ))}
+          </div>
         </div>
       </div>
+
+      {isBookOpen ? (
+        <div className="fixed inset-0 z-40 overflow-y-auto bg-black/84 px-4 py-6 backdrop-blur-md" role="dialog" aria-modal="true" aria-label="猫星占い帳">
+          <button className="fixed inset-0 cursor-default" onClick={() => setIsBookOpen(false)} type="button" aria-label="占い帳を閉じる" />
+          <div className="relative z-10 mx-auto w-full max-w-[390px] pb-8">
+            <div className="relative overflow-hidden rounded-[28px] border border-amber-100/24 bg-[#080611]/96 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.58)]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(217,190,119,0.18),transparent_34%),radial-gradient(circle_at_18%_86%,rgba(88,28,135,0.22),transparent_40%)]" />
+              <div className="pointer-events-none absolute inset-[9px] rounded-[21px] border border-amber-100/18" />
+              <div className="relative">
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-serif text-[10px] font-bold tracking-[0.34em] text-cyan-100/54">ORACLE BOOK</p>
+                    <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">猫星占い帳</h3>
+                    <p className="mt-1 text-[11px] font-bold text-white/42">保存済み {items.length}件</p>
+                  </div>
+                  <button
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-amber-100/25 bg-black/50 text-xl leading-none text-amber-50 shadow-[0_0_22px_rgba(217,190,119,0.18)]"
+                    onClick={() => setIsBookOpen(false)}
+                    type="button"
+                    aria-label="占い帳を閉じる"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div className="max-h-[70svh] space-y-2 overflow-y-auto pr-1">
+                  {items.map((item) => (
+                    <button
+                      className="w-full rounded-2xl border border-white/10 bg-black/24 p-3 text-left transition active:scale-[0.99]"
+                      key={item.id}
+                      onClick={() => setSelectedHistory(item)}
+                      type="button"
+                      aria-label={`保存した鑑定を開く ${item.themeLabel}`}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="truncate text-sm font-black text-white">{item.themeLabel}</p>
+                        <div className="flex shrink-0 items-center gap-1.5">
+                          {item.dateKey === todayKey ? (
+                            <span className="rounded-full border border-amber-100/20 bg-amber-100/[0.08] px-2 py-0.5 text-[9px] font-black text-amber-50/70">今日</span>
+                          ) : null}
+                          <p className="text-[10px] font-bold text-white/38">{formatReadingDate(item.createdAt)}</p>
+                        </div>
+                      </div>
+                      <p className="mt-1 line-clamp-1 text-[11px] font-bold text-amber-100/58">{getCardLine(item)}</p>
+                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/50">{item.summary}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
       {selectedHistory ? <HistoryReadingModal reading={selectedHistory} onClose={() => setSelectedHistory(null)} /> : null}
     </section>
   );
