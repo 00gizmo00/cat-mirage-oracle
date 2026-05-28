@@ -268,6 +268,34 @@ function formatReadingDate(value: string) {
   return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
 }
 
+function getDateKeyFromValue(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return getDateKey();
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function normalizeSavedReadings(value: string | null) {
+  if (!value) return [];
+
+  try {
+    const parsed = JSON.parse(value);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .filter((item): item is SeriousReading => Boolean(item && typeof item === "object"))
+      .map((item) => ({
+        ...item,
+        id: item.id || `saved-${item.createdAt || Date.now()}-${Math.random().toString(36).slice(2)}`,
+        createdAt: item.createdAt || new Date().toISOString(),
+        dateKey: item.dateKey || getDateKeyFromValue(item.createdAt || new Date().toISOString()),
+        tarot: Array.isArray(item.tarot) ? item.tarot : [],
+      }))
+      .slice(0, maxSavedReadings);
+  } catch {
+    return [];
+  }
+}
+
 function getCardLine(reading: SeriousReading) {
   const cards = Array.isArray(reading.tarot) ? reading.tarot : [];
   return cards.length > 0 ? cards.map((card) => card.arcana).join(" / ") : "カード記録なし";
@@ -931,15 +959,16 @@ function HistoryReadingModal({ reading, onClose }: { reading: SeriousReading; on
   );
 }
 
-function TodayHistory({ items }: { items: SeriousReading[] }) {
+function OracleBook({ items, todayKey }: { items: SeriousReading[]; todayKey: string }) {
   const [selectedHistory, setSelectedHistory] = useState<SeriousReading | null>(null);
 
   if (items.length === 0) {
     return (
       <section className="px-4 pb-8">
         <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4 text-center">
-          <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/55">TODAY'S ARCHIVE</p>
-          <p className="mt-2 text-sm font-bold text-white/50">今日保存した鑑定はまだありません。</p>
+          <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/55">ORACLE BOOK</p>
+          <h2 className="mt-1 text-lg font-black text-white">猫星占い帳</h2>
+          <p className="mt-2 text-sm font-bold text-white/50">保存した鑑定はまだありません。</p>
         </div>
       </section>
     );
@@ -950,8 +979,9 @@ function TodayHistory({ items }: { items: SeriousReading[] }) {
       <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
         <div className="flex items-end justify-between gap-3">
           <div>
-            <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/55">TODAY'S ARCHIVE</p>
-            <h2 className="mt-1 text-lg font-black text-white">今日の鑑定履歴</h2>
+            <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/55">ORACLE BOOK</p>
+            <h2 className="mt-1 text-lg font-black text-white">猫星占い帳</h2>
+            <p className="mt-1 text-[11px] font-bold text-white/42">保存した鑑定をあとから読み返せます</p>
           </div>
           <p className="rounded-full border border-cyan-100/15 bg-cyan-100/[0.06] px-3 py-1 text-[10px] font-black text-cyan-50/70">{items.length}件</p>
         </div>
@@ -966,7 +996,12 @@ function TodayHistory({ items }: { items: SeriousReading[] }) {
             >
               <div className="flex items-center justify-between gap-3">
                 <p className="truncate text-sm font-black text-white">{item.themeLabel}</p>
-                <p className="shrink-0 text-[10px] font-bold text-white/38">{formatReadingDate(item.createdAt)}</p>
+                <div className="flex shrink-0 items-center gap-1.5">
+                  {item.dateKey === todayKey ? (
+                    <span className="rounded-full border border-amber-100/20 bg-amber-100/[0.08] px-2 py-0.5 text-[9px] font-black text-amber-50/70">今日</span>
+                  ) : null}
+                  <p className="text-[10px] font-bold text-white/38">{formatReadingDate(item.createdAt)}</p>
+                </div>
               </div>
               <p className="mt-1 line-clamp-1 text-[11px] font-bold text-amber-100/58">{getCardLine(item)}</p>
               <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/50">{item.summary}</p>
@@ -1170,38 +1205,41 @@ export function SeriousOracleApp() {
   const [isReading, setIsReading] = useState(false);
   const [streak, setStreak] = useState<DailyStreak>({ lastDateKey: todayKey, streak: 1 });
   const dailyPrompt = useMemo(() => getDailyPrompt(todayKey), [todayKey]);
-  const todayHistory = useMemo(() => history.filter((item) => item.dateKey === todayKey), [history, todayKey]);
   const todayDone = history.some((item) => item.dateKey === todayKey);
   const birthDateValid = Boolean(normalizeBirthDate(profile.birthDate));
 
   useEffect(() => {
+    const storage = window.localStorage;
+
     try {
-      const savedProfile = window.localStorage.getItem(profileStorageKey);
-      if (savedProfile) {
-        const parsed = JSON.parse(savedProfile) as Partial<OracleProfile>;
+      const savedProfile = storage.getItem(profileStorageKey);
+      const parsed = savedProfile ? (JSON.parse(savedProfile) as Partial<OracleProfile>) : null;
+      if (parsed) {
         setProfile({
           birthDate: parsed.birthDate ?? defaultProfile.birthDate,
           name: parsed.name ?? "",
           theme: parsed.theme ?? "love",
         });
       }
+    } catch {
+      setProfile(defaultProfile);
+    }
 
-      const savedHistory = window.localStorage.getItem(readingsStorageKey);
-      if (savedHistory) {
-        const parsed = JSON.parse(savedHistory) as SeriousReading[];
-        const limited = parsed.slice(0, maxSavedReadings);
-        setHistory(limited);
-        setReading(limited[0] ?? null);
-        window.localStorage.setItem(readingsStorageKey, JSON.stringify(limited));
-      }
+    const limited = normalizeSavedReadings(storage.getItem(readingsStorageKey));
+    setHistory(limited);
+    setReading((current) => current ?? limited[0] ?? null);
+    if (limited.length > 0) storage.setItem(readingsStorageKey, JSON.stringify(limited));
 
-      const savedStreak = window.localStorage.getItem(streakStorageKey);
+    try {
+      const savedStreak = storage.getItem(streakStorageKey);
       const parsedStreak = savedStreak ? (JSON.parse(savedStreak) as DailyStreak) : null;
       const updated = nextStreak(parsedStreak, todayKey);
       setStreak(updated);
-      window.localStorage.setItem(streakStorageKey, JSON.stringify(updated));
+      storage.setItem(streakStorageKey, JSON.stringify(updated));
     } catch {
-      setHistory([]);
+      const updated = nextStreak(null, todayKey);
+      setStreak(updated);
+      storage.setItem(streakStorageKey, JSON.stringify(updated));
     }
   }, [todayKey]);
 
@@ -1370,7 +1408,7 @@ export function SeriousOracleApp() {
           ) : null}
 
           <AdBanner variant="archive-inline" />
-          <TodayHistory items={todayHistory} />
+          <OracleBook items={history} todayKey={todayKey} />
 
           <section className="px-4 pb-8">
             <div className="relative overflow-hidden rounded-[24px] border border-amber-100/16 bg-white/[0.045] p-5 shadow-[0_18px_52px_rgba(0,0,0,0.32)]">
