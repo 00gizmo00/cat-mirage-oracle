@@ -454,58 +454,72 @@ async function createShareCardBlob(reading: SeriousReading) {
   }
 
   ctx.save();
-  roundedRect(ctx, 434, 72, 212, 212, 106);
+  roundedRect(ctx, 446, 66, 188, 188, 94);
   ctx.clip();
-  drawCoverImage(ctx, logo, 434, 72, 212, 212);
+  drawCoverImage(ctx, logo, 446, 66, 188, 188);
   ctx.restore();
   ctx.strokeStyle = "rgba(237, 201, 117, 0.62)";
   ctx.lineWidth = 4;
-  roundedRect(ctx, 434, 72, 212, 212, 106);
+  roundedRect(ctx, 446, 66, 188, 188, 94);
   ctx.stroke();
 
   ctx.textAlign = "center";
   ctx.fillStyle = "#f8e7b0";
   ctx.font = "700 34px serif";
-  ctx.fillText("猫星ミラージュ占譜", 540, 336);
+  ctx.fillText("猫星ミラージュ占譜", 540, 304);
   ctx.fillStyle = "rgba(248, 231, 176, 0.62)";
   ctx.font = "700 18px serif";
-  ctx.fillText("NEKOSEI MIRAGE ORACLE", 540, 370);
+  ctx.fillText("NEKOSEI MIRAGE ORACLE", 540, 338);
+
+  ctx.fillStyle = "rgba(0, 0, 0, 0.54)";
+  roundedRect(ctx, 372, 358, 336, 92, 46);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(237, 201, 117, 0.34)";
+  ctx.lineWidth = 2;
+  roundedRect(ctx, 372, 358, 336, 92, 46);
+  ctx.stroke();
+  ctx.fillStyle = "rgba(248, 231, 176, 0.7)";
+  ctx.font = "700 18px serif";
+  ctx.fillText(`${reading.themeLabel} / SCORE`, 540, 390);
+  ctx.fillStyle = "#f8e7b0";
+  ctx.font = "900 48px sans-serif";
+  ctx.fillText(`${reading.score}`, 540, 434);
 
   ctx.save();
-  roundedRect(ctx, 340, 414, 400, 600, 24);
+  roundedRect(ctx, 360, 480, 360, 540, 24);
   ctx.clip();
-  if (mainImage) drawCoverImage(ctx, mainImage, 340, 414, 400, 600);
+  if (mainImage) drawCoverImage(ctx, mainImage, 360, 480, 360, 540);
   ctx.restore();
   ctx.strokeStyle = "rgba(237, 201, 117, 0.7)";
   ctx.lineWidth = 5;
-  roundedRect(ctx, 340, 414, 400, 600, 24);
+  roundedRect(ctx, 360, 480, 360, 540, 24);
   ctx.stroke();
 
   ctx.fillStyle = "rgba(0, 0, 0, 0.58)";
-  roundedRect(ctx, 104, 1038, 872, 182, 28);
+  roundedRect(ctx, 88, 1040, 904, 226, 30);
   ctx.fill();
   ctx.strokeStyle = "rgba(237, 201, 117, 0.28)";
   ctx.lineWidth = 2;
-  roundedRect(ctx, 104, 1038, 872, 182, 28);
+  roundedRect(ctx, 88, 1040, 904, 226, 30);
   ctx.stroke();
 
   ctx.textAlign = "center";
-  ctx.fillStyle = "rgba(248, 231, 176, 0.72)";
-  ctx.font = "700 24px serif";
-  ctx.fillText(`${reading.themeLabel} / SCORE ${reading.score}`, 540, 1088);
+  ctx.fillStyle = "rgba(248, 231, 176, 0.76)";
+  ctx.font = "700 22px serif";
+  ctx.fillText("TODAY'S ORACLE", 540, 1086);
   ctx.fillStyle = "#ffffff";
-  ctx.font = "900 34px sans-serif";
-  drawWrappedText(ctx, reading.headline, 540, 1138, 760, 44, 2);
+  ctx.font = "900 42px sans-serif";
+  drawWrappedText(ctx, reading.headline, 540, 1142, 810, 52, 2);
 
   ctx.fillStyle = "rgba(238, 230, 255, 0.76)";
-  ctx.font = "700 24px sans-serif";
+  ctx.font = "700 26px sans-serif";
   ctx.textAlign = "left";
-  drawWrappedText(ctx, reading.affirmation, 164, 1236, 752, 34, 2);
+  drawWrappedText(ctx, reading.summary || reading.affirmation, 140, 1224, 800, 36, 2);
 
   ctx.fillStyle = "rgba(248, 231, 176, 0.58)";
   ctx.font = "700 20px serif";
   ctx.textAlign = "center";
-  ctx.fillText("#猫星ミラージュ占譜  #猫タロット", 540, 1272);
+  ctx.fillText("#猫星ミラージュ占譜  #猫タロット", 540, 1302);
 
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
