@@ -431,6 +431,8 @@ async function createShareCardBlob(reading: SeriousReading) {
   if (!ctx) throw new Error("Canvas is not supported");
 
   const mainCard = reading.tarot[1] ?? reading.tarot[0];
+  const mainCardKey = mainCard ? arcanaKey(mainCard.arcana) : "";
+  const mainCardEnglish = mainCardKey ? englishArcana[mainCardKey] ?? mainCardKey.toUpperCase() : "";
   const publicSummary = getPublicShareSummary(reading);
   const logoPromise = loadCanvasImage("/brand/cat-mirage-logo.png");
   const mainCardPromise = mainCard ? loadCanvasImage(mainCard.imageSrc || tarotImageByArcana[arcanaKey(mainCard.arcana)] || "") : null;
@@ -511,31 +513,48 @@ async function createShareCardBlob(reading: SeriousReading) {
   roundedRect(ctx, 360, 480, 360, 540, 24);
   ctx.stroke();
 
+  if (mainCard) {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.64)";
+    roundedRect(ctx, 312, 980, 456, 92, 28);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(237, 201, 117, 0.38)";
+    ctx.lineWidth = 2;
+    roundedRect(ctx, 312, 980, 456, 92, 28);
+    ctx.stroke();
+    ctx.textAlign = "center";
+    ctx.fillStyle = "rgba(248, 231, 176, 0.68)";
+    ctx.font = "700 18px serif";
+    ctx.fillText(mainCardEnglish, 540, 1018);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 28px sans-serif";
+    ctx.fillText(mainCard.arcana, 540, 1054);
+  }
+
   ctx.fillStyle = "rgba(0, 0, 0, 0.58)";
-  roundedRect(ctx, 88, 1040, 904, 226, 30);
+  roundedRect(ctx, 88, 1088, 904, 188, 30);
   ctx.fill();
   ctx.strokeStyle = "rgba(237, 201, 117, 0.28)";
   ctx.lineWidth = 2;
-  roundedRect(ctx, 88, 1040, 904, 226, 30);
+  roundedRect(ctx, 88, 1088, 904, 188, 30);
   ctx.stroke();
 
   ctx.textAlign = "center";
   ctx.fillStyle = "rgba(248, 231, 176, 0.76)";
   ctx.font = "700 22px serif";
-  ctx.fillText("TODAY'S ORACLE", 540, 1086);
+  ctx.fillText("TODAY'S ORACLE", 540, 1134);
   ctx.fillStyle = "#ffffff";
-  ctx.font = "900 42px sans-serif";
-  drawWrappedText(ctx, reading.headline, 540, 1142, 810, 52, 2);
+  ctx.font = "900 36px sans-serif";
+  drawWrappedText(ctx, reading.headline, 540, 1184, 810, 44, 2);
 
   ctx.fillStyle = "rgba(238, 230, 255, 0.76)";
-  ctx.font = "700 24px sans-serif";
+  ctx.font = "700 21px sans-serif";
   ctx.textAlign = "left";
-  drawWrappedText(ctx, publicSummary, 140, 1220, 800, 34, 3);
+  drawWrappedText(ctx, publicSummary, 140, 1250, 800, 28, 1);
 
   ctx.fillStyle = "rgba(248, 231, 176, 0.58)";
   ctx.font = "700 20px serif";
   ctx.textAlign = "center";
-  ctx.fillText("#猫星ミラージュ占譜  #猫タロット", 540, 1302);
+  ctx.fillText("#猫星ミラージュ占譜  #猫タロット", 540, 1306);
 
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
