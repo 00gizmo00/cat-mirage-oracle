@@ -303,13 +303,28 @@ function getCardLine(reading: SeriousReading) {
   return cards.length > 0 ? cards.map((card) => card.arcana).join(" / ") : "カード記録なし";
 }
 
+function stripPrivateName(reading: SeriousReading, text: string) {
+  const name = reading.profile?.name?.trim();
+  if (!name) return text.replace(/あなたさん/g, "あなた");
+
+  return text
+    .replaceAll(`${name}さん`, "あなた")
+    .replaceAll(name, "あなた")
+    .replace(/あなたさん/g, "あなた");
+}
+
+function getPublicShareSummary(reading: SeriousReading) {
+  const affirmation = stripPrivateName(reading, reading.affirmation).replace(/^今日の一言:\s*/, "");
+  return `猫タロットは「${getCardLine(reading)}」。${affirmation}`;
+}
+
 function buildShareText(reading: SeriousReading) {
   return [
     "猫星ミラージュ占譜",
     `${reading.themeLabel} ${reading.score}点`,
     reading.headline,
     `猫タロット: ${getCardLine(reading)}`,
-    reading.affirmation,
+    getPublicShareSummary(reading),
   ].join("\n");
 }
 
@@ -416,6 +431,7 @@ async function createShareCardBlob(reading: SeriousReading) {
   if (!ctx) throw new Error("Canvas is not supported");
 
   const mainCard = reading.tarot[1] ?? reading.tarot[0];
+  const publicSummary = getPublicShareSummary(reading);
   const logoPromise = loadCanvasImage("/brand/cat-mirage-logo.png");
   const mainCardPromise = mainCard ? loadCanvasImage(mainCard.imageSrc || tarotImageByArcana[arcanaKey(mainCard.arcana)] || "") : null;
   const [logo, mainImage] = await Promise.all([logoPromise, mainCardPromise]);
@@ -512,9 +528,9 @@ async function createShareCardBlob(reading: SeriousReading) {
   drawWrappedText(ctx, reading.headline, 540, 1142, 810, 52, 2);
 
   ctx.fillStyle = "rgba(238, 230, 255, 0.76)";
-  ctx.font = "700 26px sans-serif";
+  ctx.font = "700 24px sans-serif";
   ctx.textAlign = "left";
-  drawWrappedText(ctx, reading.summary || reading.affirmation, 140, 1224, 800, 36, 2);
+  drawWrappedText(ctx, publicSummary, 140, 1220, 800, 34, 3);
 
   ctx.fillStyle = "rgba(248, 231, 176, 0.58)";
   ctx.font = "700 20px serif";
