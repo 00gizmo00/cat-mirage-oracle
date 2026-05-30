@@ -1620,6 +1620,30 @@ export function SeriousOracleApp() {
           <TarotCatalog />
 
           <section className="px-4 pb-8">
+            <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
+              <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-amber-100/55">GUIDE</p>
+              <h2 className="mt-1 text-lg font-black text-white">読み物とガイド</h2>
+              <p className="mt-1 text-[11px] font-bold leading-5 text-white/42">占いの考え方、猫タロット、保存機能について詳しく読めます。</p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {[
+                  { href: "/about", label: "このサイトについて" },
+                  { href: "/how-to-use", label: "使い方" },
+                  { href: "/tarot", label: "猫タロット解説" },
+                  { href: "/journal", label: "占い帳について" },
+                ].map((item) => (
+                  <a
+                    className="rounded-2xl border border-amber-100/16 bg-black/24 px-3 py-3 text-center text-xs font-black text-amber-50 transition active:scale-[0.98]"
+                    href={item.href}
+                    key={item.href}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="px-4 pb-8">
             <div className="relative overflow-hidden rounded-[24px] border border-amber-100/16 bg-white/[0.045] p-5 shadow-[0_18px_52px_rgba(0,0,0,0.32)]">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(217,190,119,0.12),transparent_32%),radial-gradient(circle_at_85%_86%,rgba(88,28,135,0.2),transparent_38%)]" />
               <div className="relative">
