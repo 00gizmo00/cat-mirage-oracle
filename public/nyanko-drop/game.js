@@ -25,7 +25,8 @@
     score: 0,
     currentChain: 0,
     busy: false,
-    touchStart: null,
+    pointerStart: null,
+    suppressNextClick: false,
     audioContext: null,
   };
 
@@ -38,8 +39,9 @@
 
   function bindEvents() {
     boardEl.addEventListener("click", handleBoardClick);
-    boardEl.addEventListener("touchstart", handleTouchStart, { passive: true });
-    boardEl.addEventListener("touchend", handleTouchEnd, { passive: true });
+    boardEl.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", clearPointerStart);
     resetButton.addEventListener("click", resetGame);
   }
 
@@ -112,6 +114,11 @@
   }
 
   function handleBoardClick(event) {
+    if (state.suppressNextClick) {
+      state.suppressNextClick = false;
+      return;
+    }
+
     const cell = event.target.closest(".cell");
 
     if (!cell || state.busy) {
@@ -417,47 +424,57 @@
     });
   }
 
-  function handleTouchStart(event) {
+  function handlePointerDown(event) {
     const cell = event.target.closest(".cell");
     if (!cell || state.busy) return;
 
-    const touch = event.changedTouches[0];
-    state.touchStart = {
+    state.pointerStart = {
       row: Number(cell.dataset.row),
       col: Number(cell.dataset.col),
-      x: touch.clientX,
-      y: touch.clientY,
+      x: event.clientX,
+      y: event.clientY,
+      time: performance.now(),
+      pointerId: event.pointerId,
     };
   }
 
-  function handleTouchEnd(event) {
-    if (!state.touchStart || state.busy) return;
+  function handlePointerUp(event) {
+    if (!state.pointerStart || state.busy) return;
 
-    const touch = event.changedTouches[0];
-    const dx = touch.clientX - state.touchStart.x;
-    const dy = touch.clientY - state.touchStart.y;
+    const dx = event.clientX - state.pointerStart.x;
+    const dy = event.clientY - state.pointerStart.y;
     const distance = Math.hypot(dx, dy);
+    const elapsed = performance.now() - state.pointerStart.time;
 
-    if (distance < 28) {
-      state.touchStart = null;
+    if (distance < 20 || elapsed > 900) {
+      clearPointerStart();
       return;
     }
 
-    const target = { row: state.touchStart.row, col: state.touchStart.col };
+    const target = { row: state.pointerStart.row, col: state.pointerStart.col };
     if (Math.abs(dx) > Math.abs(dy)) {
       target.col += dx > 0 ? 1 : -1;
     } else {
       target.row += dy > 0 ? 1 : -1;
     }
 
-    const from = { row: state.touchStart.row, col: state.touchStart.col };
-    state.touchStart = null;
+    const from = { row: state.pointerStart.row, col: state.pointerStart.col };
+    clearPointerStart();
 
     if (isInside(target)) {
+      event.preventDefault();
+      state.suppressNextClick = true;
+      window.setTimeout(() => {
+        state.suppressNextClick = false;
+      }, 350);
       activateAudio();
       state.selected = null;
       tryMove(from, target);
     }
+  }
+
+  function clearPointerStart() {
+    state.pointerStart = null;
   }
 
   function swap(a, b) {

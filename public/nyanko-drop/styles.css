@@ -34,6 +34,7 @@ body {
     "Segoe UI",
     sans-serif;
   background:
+    radial-gradient(circle at 8% 82%, rgba(238, 111, 134, 0.1), transparent 20%),
     radial-gradient(circle at 18% 8%, rgba(77, 182, 165, 0.17), transparent 28%),
     radial-gradient(circle at 85% 18%, rgba(241, 188, 76, 0.18), transparent 26%),
     linear-gradient(160deg, #fff7f1 0%, #fff1f5 48%, #f6fff9 100%);
@@ -65,6 +66,31 @@ a {
   gap: 12px;
 }
 
+.title-block {
+  position: relative;
+  padding-left: 4px;
+}
+
+.title-block::before,
+.title-block::after {
+  content: "";
+  position: absolute;
+  top: 22px;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px 14px 4px 14px;
+  background: rgba(238, 111, 134, 0.2);
+  transform: rotate(45deg);
+}
+
+.title-block::before {
+  left: -8px;
+}
+
+.title-block::after {
+  left: 22px;
+}
+
 .eyebrow {
   margin: 0 0 2px;
   color: var(--accent-2);
@@ -78,6 +104,13 @@ h1 {
   margin: 0;
   font-size: clamp(1.55rem, 7vw, 2.45rem);
   line-height: 1;
+}
+
+.cat-face {
+  display: inline-block;
+  margin-right: 0.18em;
+  font-size: 0.84em;
+  transform: translateY(-0.02em) rotate(-8deg);
 }
 
 .score-panel {
@@ -118,7 +151,33 @@ h1 {
   margin: 0 auto;
 }
 
+.board-wrap::before,
+.board-wrap::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -18px;
+  width: 62px;
+  height: 42px;
+  border: 2px solid rgba(238, 111, 134, 0.3);
+  border-bottom: 0;
+  background: rgba(255, 253, 248, 0.72);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.board-wrap::before {
+  left: 14px;
+  transform: rotate(-7deg);
+}
+
+.board-wrap::after {
+  right: 14px;
+  transform: rotate(7deg);
+}
+
 .board {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   padding: clamp(6px, 1.8vw, 10px);
@@ -132,6 +191,16 @@ h1 {
     linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 244, 235, 0.88)),
     repeating-linear-gradient(45deg, rgba(238, 111, 134, 0.04) 0 10px, transparent 10px 20px);
   box-shadow: var(--shadow);
+  touch-action: none;
+}
+
+.board::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 10px;
+  border: 2px solid rgba(238, 111, 134, 0.2);
+  pointer-events: none;
 }
 
 .cell {
@@ -145,12 +214,50 @@ h1 {
   font-size: clamp(1.35rem, 7vw, 2.55rem);
   line-height: 1;
   cursor: pointer;
+  touch-action: none;
   transform: translateZ(0);
   transition:
     transform 130ms ease,
     box-shadow 130ms ease,
     background 130ms ease,
     opacity 160ms ease;
+}
+
+.board-deco {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 12px rgba(87, 51, 37, 0.12));
+}
+
+.board-deco.top-left {
+  top: -28px;
+  left: -10px;
+  font-size: clamp(1.8rem, 8vw, 3rem);
+  transform: rotate(-9deg);
+}
+
+.board-deco.top-right {
+  top: -15px;
+  right: -22px;
+  width: 88px;
+  height: 34px;
+  overflow: hidden;
+  color: transparent;
+  border-top: 7px solid rgba(57, 41, 35, 0.34);
+  border-radius: 100% 20% 0 0;
+  transform: rotate(20deg);
+}
+
+.paw-trail {
+  position: absolute;
+  z-index: 0;
+  right: 8px;
+  top: -32px;
+  color: rgba(238, 111, 134, 0.36);
+  font-size: clamp(1rem, 4vw, 1.45rem);
+  transform: rotate(-9deg);
+  pointer-events: none;
 }
 
 .cell::after {
@@ -189,6 +296,7 @@ h1 {
 
 .effect-layer {
   position: absolute;
+  z-index: 3;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
@@ -246,10 +354,29 @@ h1 {
 
 .status {
   min-height: 1.45em;
-  margin: 0;
+  margin: 6px 0 0;
   color: var(--muted);
   text-align: center;
   font-size: 0.92rem;
+}
+
+.status::before,
+.status::after {
+  content: " whisker ";
+  display: inline-block;
+  width: 34px;
+  overflow: hidden;
+  color: transparent;
+  border-top: 1px solid rgba(128, 107, 100, 0.34);
+  transform: translateY(-0.28em);
+}
+
+.status::before {
+  margin-right: 8px;
+}
+
+.status::after {
+  margin-left: 8px;
 }
 
 .actions {
@@ -327,6 +454,13 @@ h1 {
     align-items: start;
   }
 
+  .title-block::before,
+  .title-block::after {
+    top: 19px;
+    width: 14px;
+    height: 14px;
+  }
+
   .score-panel {
     min-width: 132px;
     gap: 6px;
@@ -334,6 +468,20 @@ h1 {
 
   .score-panel > div {
     padding: 7px 8px;
+  }
+
+  .board-deco.top-left {
+    left: -6px;
+    top: -22px;
+  }
+
+  .board-deco.top-right {
+    right: -12px;
+  }
+
+  .status::before,
+  .status::after {
+    width: 18px;
   }
 }
 
