@@ -32,6 +32,7 @@ export type SeriousReading = {
   sections: { title: string; body: string }[];
   lucky: { color: string; item: string; action: string; time: string };
   affirmation: string;
+  isFavorite?: boolean;
 };
 
 const themeLabels: Record<ReadingTheme, string> = {

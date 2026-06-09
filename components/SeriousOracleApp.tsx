@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AdBanner } from "./AdBanner";
+import { ZodiacCatIcon } from "./ZodiacCatIcon";
 import {
   createReading,
   getDailyPrompt,
@@ -12,6 +13,7 @@ import {
   type SeriousReading,
   type TarotDraw,
 } from "@/lib/seriousOracle";
+import { getDailyZodiacRanking } from "@/lib/zodiac";
 
 const profileStorageKey = "serious-oracle-profile";
 const readingsStorageKey = "serious-oracle-readings";
@@ -291,6 +293,7 @@ function normalizeSavedReadings(value: string | null) {
         createdAt: item.createdAt || new Date().toISOString(),
         dateKey: item.dateKey || getDateKeyFromValue(item.createdAt || new Date().toISOString()),
         tarot: Array.isArray(item.tarot) ? item.tarot : [],
+        isFavorite: Boolean(item.isFavorite),
       }))
       .slice(0, maxSavedReadings);
   } catch {
@@ -1024,10 +1027,19 @@ function HistoryReadingModal({ reading, onClose }: { reading: SeriousReading; on
   );
 }
 
-function OracleBook({ items, todayKey }: { items: SeriousReading[]; todayKey: string }) {
+function OracleBook({
+  items,
+  todayKey,
+  onToggleFavorite,
+}: {
+  items: SeriousReading[];
+  todayKey: string;
+  onToggleFavorite: (id: string) => void;
+}) {
   const [isBookOpen, setIsBookOpen] = useState(false);
   const [selectedHistory, setSelectedHistory] = useState<SeriousReading | null>(null);
   const latest = items[0];
+  const favorites = items.filter((item) => item.isFavorite);
 
   if (items.length === 0) {
     return (
@@ -1053,7 +1065,9 @@ function OracleBook({ items, todayKey }: { items: SeriousReading[]; todayKey: st
             </p>
           </div>
           <div className="text-right">
-            <p className="mb-2 rounded-full border border-cyan-100/15 bg-cyan-100/[0.06] px-3 py-1 text-[10px] font-black text-cyan-50/70">{items.length}件</p>
+            <p className="mb-2 rounded-full border border-cyan-100/15 bg-cyan-100/[0.06] px-3 py-1 text-[10px] font-black text-cyan-50/70">
+              {items.length}件 / ★{favorites.length}
+            </p>
             <button
               className="rounded-full border border-amber-100/30 bg-amber-100/[0.1] px-4 py-2 text-xs font-black text-amber-50 shadow-[0_0_24px_rgba(217,190,119,0.12)] transition active:scale-[0.98]"
               onClick={() => setIsBookOpen(true)}
@@ -1089,6 +1103,25 @@ function OracleBook({ items, todayKey }: { items: SeriousReading[]; todayKey: st
                   </button>
                 </div>
 
+                {favorites.length > 0 ? (
+                  <section className="mb-4 rounded-2xl border border-amber-100/18 bg-amber-100/[0.06] p-3">
+                    <p className="font-serif text-[10px] font-bold tracking-[0.26em] text-amber-100/58">FAVORITES</p>
+                    <div className="mt-2 space-y-2">
+                      {favorites.slice(0, 5).map((item) => (
+                        <button
+                          className="w-full rounded-xl border border-amber-100/14 bg-black/26 px-3 py-2 text-left transition active:scale-[0.99]"
+                          key={`favorite-${item.id}`}
+                          onClick={() => setSelectedHistory(item)}
+                          type="button"
+                        >
+                          <p className="truncate text-xs font-black text-amber-50">★ {item.themeLabel} ・ {formatReadingDate(item.createdAt)}</p>
+                          <p className="mt-1 line-clamp-1 text-[11px] text-violet-50/58">{getCardLine(item)}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+
                 <div className="max-h-[70svh] space-y-2 overflow-y-auto pr-1">
                   {items.map((item) => (
                     <button
@@ -1101,6 +1134,30 @@ function OracleBook({ items, todayKey }: { items: SeriousReading[]; todayKey: st
                       <div className="flex items-center justify-between gap-3">
                         <p className="truncate text-sm font-black text-white">{item.themeLabel}</p>
                         <div className="flex shrink-0 items-center gap-1.5">
+                          <span
+                            className={`grid h-7 w-7 place-items-center rounded-full border text-sm ${
+                              item.isFavorite
+                                ? "border-amber-100/45 bg-amber-100/[0.14] text-amber-100"
+                                : "border-white/10 bg-white/[0.04] text-white/34"
+                            }`}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              onToggleFavorite(item.id);
+                            }}
+                            role="button"
+                            tabIndex={0}
+                            title={item.isFavorite ? "お気に入り解除" : "お気に入りに追加"}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                onToggleFavorite(item.id);
+                              }
+                            }}
+                          >
+                            ★
+                          </span>
                           {item.dateKey === todayKey ? (
                             <span className="rounded-full border border-amber-100/20 bg-amber-100/[0.08] px-2 py-0.5 text-[9px] font-black text-amber-50/70">今日</span>
                           ) : null}
@@ -1218,6 +1275,71 @@ function TarotCatalog() {
         </div>
       ) : null}
       {selectedCard ? <TarotCardModal card={selectedCard} onClose={() => setSelectedCard(null)} /> : null}
+    </section>
+  );
+}
+
+function CatStarRanking({ dateKey }: { dateKey: string }) {
+  const ranking = useMemo(() => getDailyZodiacRanking(dateKey), [dateKey]);
+  const top = ranking[0];
+
+  return (
+    <section className="px-4 pb-4">
+      <div className="relative overflow-hidden rounded-[24px] border border-amber-100/18 bg-white/[0.045] p-4 shadow-[0_18px_48px_rgba(0,0,0,0.26)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_24%_0%,rgba(217,190,119,0.16),transparent_34%),radial-gradient(circle_at_90%_88%,rgba(88,28,135,0.24),transparent_42%)]" />
+        <div className="relative">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-amber-100/58">TODAY'S CAT STAR RANKING</p>
+              <h2 className="mt-1 text-xl font-black text-white">今日の猫星ランキング</h2>
+              <p className="mt-1 text-[11px] font-bold text-white/44">毎日0時更新・同じ日は同じ順位</p>
+            </div>
+            <a
+              className="shrink-0 rounded-full border border-amber-100/30 bg-amber-100/[0.1] px-3 py-2 text-[11px] font-black text-amber-50"
+              href="/zodiac"
+            >
+              星座図鑑
+            </a>
+          </div>
+
+          <a
+            className="mt-4 flex items-center gap-3 rounded-[22px] border border-amber-100/28 bg-amber-100/[0.08] p-3 shadow-[0_0_30px_rgba(217,190,119,0.12)]"
+            href={`/zodiac/${top.slug}`}
+          >
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-amber-100/30 bg-black/36 text-xl font-black text-amber-100">
+              1
+            </div>
+            <ZodiacCatIcon sign={top} size="sm" />
+            <div className="min-w-0">
+              <p className="font-serif text-[10px] font-bold tracking-[0.22em] text-amber-100/58">{top.english}</p>
+              <h3 className="text-lg font-black text-white">{top.name}</h3>
+              <p className="line-clamp-2 text-xs font-bold leading-5 text-violet-50/66">{top.catMessage}</p>
+            </div>
+          </a>
+
+          <div className="mt-3 grid gap-2">
+            {ranking.map((sign) => (
+              <a
+                className={`grid grid-cols-[2rem_1fr] gap-2 rounded-2xl border p-3 transition active:scale-[0.99] ${
+                  sign.rank <= 3 ? "border-amber-100/18 bg-black/32" : "border-white/10 bg-black/18"
+                }`}
+                href={`/zodiac/${sign.slug}`}
+                key={sign.slug}
+              >
+                <div className={`text-center text-sm font-black ${sign.rank <= 3 ? "text-amber-100" : "text-white/42"}`}>{sign.rank}</div>
+                <div className="min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="truncate text-sm font-black text-white">{sign.name}</p>
+                    <p className="shrink-0 text-[10px] font-bold text-amber-100/54">{sign.luckyColor}</p>
+                  </div>
+                  <p className="mt-1 line-clamp-1 text-[11px] font-bold text-violet-50/56">{sign.luckyAction}</p>
+                  <p className="mt-1 line-clamp-1 text-[11px] text-white/42">{sign.catMessage}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
@@ -1474,6 +1596,7 @@ export function SeriousOracleApp() {
       id: `${item.id}-${Date.now()}`,
       createdAt: new Date().toISOString(),
       dateKey: todayKey,
+      isFavorite: false,
     };
     setHistory((current) => {
       const next = [savedReading, ...current].slice(0, maxSavedReadings);
@@ -1481,6 +1604,15 @@ export function SeriousOracleApp() {
       return next;
     });
     setReading(savedReading);
+  };
+
+  const toggleFavorite = (id: string) => {
+    setHistory((current) => {
+      const next = current.map((item) => (item.id === id ? { ...item, isFavorite: !item.isFavorite } : item));
+      window.localStorage.setItem(readingsStorageKey, JSON.stringify(next));
+      return next;
+    });
+    setReading((current) => (current?.id === id ? { ...current, isFavorite: !current.isFavorite } : current));
   };
 
   return (
@@ -1509,6 +1641,8 @@ export function SeriousOracleApp() {
               姓名判断、星の暦、猫タロットを重ねて今日の流れを読む複合鑑定。
             </p>
           </header>
+
+          <CatStarRanking dateKey={todayKey} />
 
           <section className="px-4">
             <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
@@ -1616,7 +1750,7 @@ export function SeriousOracleApp() {
           ) : null}
 
           <AdBanner variant="archive-inline" />
-          <OracleBook items={history} todayKey={todayKey} />
+          <OracleBook items={history} todayKey={todayKey} onToggleFavorite={toggleFavorite} />
           <TarotCatalog />
 
           <section className="px-4 pb-8">
@@ -1631,6 +1765,7 @@ export function SeriousOracleApp() {
                   { href: "/how-to-use", label: "はじめての方へ", caption: "入力から保存、共有までの使い方" },
                   { href: "/articles", label: "おすすめの読み物", caption: "猫タロットと占いの向き合い方" },
                   { href: "/tarot", label: "猫タロット図鑑", caption: "大アルカナ22枚の意味を読む" },
+                  { href: "/zodiac", label: "12星座猫図鑑", caption: "星座ごとの黒猫アイコンと特徴" },
                   { href: "/journal", label: "占い帳の使い方", caption: "保存履歴を毎日の振り返りへ" },
                   { href: "/articles/tarot-in-daily-life", label: "最近更新した記事", caption: "タロットを日常生活に活かす方法" },
                 ].map((item) => (

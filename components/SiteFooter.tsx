@@ -5,6 +5,7 @@ const footerLinks = [
   { href: "/how-to-use", label: "使い方" },
   { href: "/articles", label: "読み物一覧" },
   { href: "/tarot", label: "猫タロット解説" },
+  { href: "/zodiac", label: "12星座猫図鑑" },
   { href: "/journal", label: "占い帳について" },
   { href: "/privacy", label: "プライバシーポリシー" },
   { href: "/terms", label: "利用規約" },

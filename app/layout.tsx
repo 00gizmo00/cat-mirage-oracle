@@ -4,6 +4,7 @@ import { siteConfig } from "@/lib/siteConfig";
 import "./globals.css";
 
 const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+const ogImage = "/opengraph-image";
 const logoImage = "/brand/cat-mirage-logo.png";
 
 export const metadata: Metadata = {
@@ -26,10 +27,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: logoImage,
-        width: 1024,
-        height: 1024,
-        alt: siteConfig.name,
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name}の共有画像`,
       },
     ],
   },
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [logoImage],
+    images: [ogImage],
   },
   icons: {
     icon: logoImage,

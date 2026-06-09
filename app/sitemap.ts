@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { articles } from "@/lib/articles";
 import { siteConfig } from "@/lib/siteConfig";
 import { tarotDetails } from "@/lib/tarotDetails";
+import { zodiacSigns } from "@/lib/zodiac";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
@@ -10,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/how-to-use", changeFrequency: "monthly" as const, priority: 0.8 },
     { path: "/articles", changeFrequency: "weekly" as const, priority: 0.85 },
     { path: "/tarot", changeFrequency: "monthly" as const, priority: 0.8 },
+    { path: "/zodiac", changeFrequency: "daily" as const, priority: 0.82 },
     { path: "/journal", changeFrequency: "monthly" as const, priority: 0.7 },
     { path: "/privacy", changeFrequency: "monthly" as const, priority: 0.5 },
     { path: "/terms", changeFrequency: "monthly" as const, priority: 0.5 },
@@ -29,7 +31,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.68,
   }));
 
-  const routes = [...staticRoutes, ...articleRoutes, ...tarotRoutes];
+  const zodiacRoutes = zodiacSigns.map((sign) => ({
+    path: `/zodiac/${sign.slug}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  const routes = [...staticRoutes, ...articleRoutes, ...tarotRoutes, ...zodiacRoutes];
 
   return routes.map((route) => ({
     url: `${siteConfig.url}${route.path}`,
