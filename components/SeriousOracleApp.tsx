@@ -1625,20 +1625,22 @@ export function SeriousOracleApp() {
               <div className="relative">
               <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-amber-100/65">GUIDE / ARTICLES</p>
               <h2 className="mt-1 text-xl font-black text-white">読み物とガイド</h2>
-              <p className="mt-1 text-xs font-bold leading-6 text-amber-50/72">占いの考え方、22枚の猫タロット、保存機能、よくある質問を詳しく読めます。</p>
-              <div className="mt-3 grid grid-cols-2 gap-2">
+              <p className="mt-1 text-xs font-bold leading-6 text-amber-50/72">はじめての方、読み物、22枚の猫タロット、占い帳の使い方をまとめています。</p>
+              <div className="mt-3 grid gap-2">
                 {[
-                  { href: "/about", label: "このサイトについて" },
-                  { href: "/how-to-use", label: "使い方" },
-                  { href: "/tarot", label: "猫タロット解説" },
-                  { href: "/journal", label: "占い帳について" },
+                  { href: "/how-to-use", label: "はじめての方へ", caption: "入力から保存、共有までの使い方" },
+                  { href: "/articles", label: "おすすめの読み物", caption: "猫タロットと占いの向き合い方" },
+                  { href: "/tarot", label: "猫タロット図鑑", caption: "大アルカナ22枚の意味を読む" },
+                  { href: "/journal", label: "占い帳の使い方", caption: "保存履歴を毎日の振り返りへ" },
+                  { href: "/articles/tarot-in-daily-life", label: "最近更新した記事", caption: "タロットを日常生活に活かす方法" },
                 ].map((item) => (
                   <a
-                    className="rounded-2xl border border-amber-100/24 bg-black/34 px-3 py-3 text-center text-xs font-black text-amber-50 shadow-[0_0_18px_rgba(217,190,119,0.08)] transition active:scale-[0.98]"
+                    className="rounded-2xl border border-amber-100/24 bg-black/34 px-3 py-3 text-left text-xs font-black text-amber-50 shadow-[0_0_18px_rgba(217,190,119,0.08)] transition active:scale-[0.98]"
                     href={item.href}
                     key={item.href}
                   >
-                    {item.label}
+                    <span className="block text-sm">{item.label}</span>
+                    <span className="mt-1 block font-bold leading-5 text-violet-50/56">{item.caption}</span>
                   </a>
                 ))}
               </div>

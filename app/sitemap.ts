@@ -1,11 +1,14 @@
 import type { MetadataRoute } from "next";
+import { articles } from "@/lib/articles";
 import { siteConfig } from "@/lib/siteConfig";
+import { tarotDetails } from "@/lib/tarotDetails";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = [
+  const staticRoutes = [
     { path: "", changeFrequency: "daily" as const, priority: 1 },
     { path: "/about", changeFrequency: "monthly" as const, priority: 0.8 },
     { path: "/how-to-use", changeFrequency: "monthly" as const, priority: 0.8 },
+    { path: "/articles", changeFrequency: "weekly" as const, priority: 0.85 },
     { path: "/tarot", changeFrequency: "monthly" as const, priority: 0.8 },
     { path: "/journal", changeFrequency: "monthly" as const, priority: 0.7 },
     { path: "/privacy", changeFrequency: "monthly" as const, priority: 0.5 },
@@ -13,6 +16,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/disclaimer", changeFrequency: "monthly" as const, priority: 0.5 },
     { path: "/contact", changeFrequency: "monthly" as const, priority: 0.4 },
   ];
+
+  const articleRoutes = articles.map((article) => ({
+    path: `/articles/${article.slug}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.72,
+  }));
+
+  const tarotRoutes = tarotDetails.map((card) => ({
+    path: `/tarot/${card.slug}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.68,
+  }));
+
+  const routes = [...staticRoutes, ...articleRoutes, ...tarotRoutes];
 
   return routes.map((route) => ({
     url: `${siteConfig.url}${route.path}`,

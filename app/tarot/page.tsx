@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ContentPage } from "@/components/ContentPage";
+import { tarotDetails } from "@/lib/tarotDetails";
 
 export const metadata: Metadata = {
   title: "猫タロット大アルカナ解説",
@@ -43,7 +44,7 @@ export default function TarotPage() {
         },
         {
           title: "22枚のカード",
-          body: cards.join("\n"),
+          body: `${cards.join("\n")}\n\n各カードの詳しい読み方は、下の「おすすめ記事」から個別ページへ進めます。正位置、逆位置、恋愛、仕事、人間関係、自己成長の読み分けを、猫星ミラージュ占譜の世界観に合わせて解説しています。`,
         },
         {
           title: "日常での活かし方",
@@ -53,6 +54,12 @@ export default function TarotPage() {
           title: "読む時の注意",
           body: "強く印象に残ったカードほど、今の自分が気にしているテーマを映していることがあります。ただし、占い結果は断定ではありません。カード名や絵柄から浮かんだ言葉をメモし、現実の情報や周囲の意見と合わせて判断してください。\n\n猫タロットの絵柄は、怖いカードを怖いままに扱うためではなく、変化や迷いを少し離れた場所から眺めるために作っています。悪魔や死神、塔のようなカードも、悪い未来を決めるものではありません。執着を見直す、終わったものを認める、古い構造を変えるなど、日常に落とし込める読み方を心がけてください。",
         },
+      ]}
+      relatedLinks={[
+        ...tarotDetails.map((card) => ({ href: `/tarot/${card.slug}`, label: `${card.arcana} ${card.english}` })),
+        { href: "/articles/what-is-cat-tarot", label: "猫タロットとは何か" },
+        { href: "/articles/tarot-in-daily-life", label: "タロットを日常生活に活かす方法" },
+        { href: "/journal", label: "占い帳の使い方" },
       ]}
     />
   );

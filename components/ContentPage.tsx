@@ -10,9 +10,10 @@ type ContentPageProps = {
   title: string;
   lead: string;
   sections: ContentSection[];
+  relatedLinks?: { href: string; label: string }[];
 };
 
-export function ContentPage({ title, lead, sections }: ContentPageProps) {
+export function ContentPage({ title, lead, sections, relatedLinks = [] }: ContentPageProps) {
   return (
     <main className="min-h-svh px-4 py-8 text-white">
       <article className="mx-auto max-w-[760px] overflow-hidden rounded-[28px] border border-white/10 bg-[#070612]/92 shadow-[0_24px_80px_rgba(0,0,0,0.48)]">
@@ -31,6 +32,22 @@ export function ContentPage({ title, lead, sections }: ContentPageProps) {
               <p className="mt-2 whitespace-pre-line text-sm leading-7 text-violet-50/74">{section.body}</p>
             </section>
           ))}
+          {relatedLinks.length > 0 ? (
+            <section className="rounded-2xl border border-amber-100/14 bg-amber-100/[0.055] p-4">
+              <h2 className="text-base font-black text-amber-50">おすすめ記事</h2>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                {relatedLinks.map((link) => (
+                  <Link
+                    className="rounded-2xl border border-white/10 bg-black/24 px-3 py-3 text-sm font-bold leading-5 text-violet-50/78 underline-offset-4 hover:text-amber-100 hover:underline"
+                    href={link.href}
+                    key={link.href}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ) : null}
           <Link className="inline-flex rounded-full border border-amber-100/24 bg-amber-100/[0.07] px-4 py-2 text-sm font-bold text-amber-50" href="/">
             トップへ戻る
           </Link>

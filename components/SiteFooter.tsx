@@ -3,6 +3,7 @@ import Link from "next/link";
 const footerLinks = [
   { href: "/about", label: "このサイトについて" },
   { href: "/how-to-use", label: "使い方" },
+  { href: "/articles", label: "読み物一覧" },
   { href: "/tarot", label: "猫タロット解説" },
   { href: "/journal", label: "占い帳について" },
   { href: "/privacy", label: "プライバシーポリシー" },
