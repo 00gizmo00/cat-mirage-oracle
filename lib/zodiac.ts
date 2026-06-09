@@ -5,6 +5,7 @@ export type ZodiacSign = {
   english: string;
   motif: string;
   symbol: string;
+  imageSrc: string;
   luckyItem: string;
   personality: string;
   catFeature: string;
@@ -28,6 +29,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "ARIES",
     motif: "羊角",
     symbol: "♈",
+    imageSrc: "/zodiac/aries-cat.webp",
     luckyItem: "赤い小物",
     personality: "直感が先に走り、考える前に一歩を踏み出せる星座です。熱量が高く、停滞した空気を変えるきっかけを作れます。",
     catFeature: "猫星では、金色の羊角を持つ黒猫として描きます。小さな火花を追うように、誰より早く夜道へ飛び出す猫です。",
@@ -42,6 +44,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "TAURUS",
     motif: "牛角",
     symbol: "♉",
+    imageSrc: "/zodiac/taurus-cat.webp",
     luckyItem: "香りのあるもの",
     personality: "感覚が鋭く、心地よさや安心できる環境を育てる力があります。急がず、確かなものを積み重ねる星座です。",
     catFeature: "猫星では、重厚な牛角を持つ黒猫です。金の首飾りを揺らしながら、豊かな庭を静かに守ります。",
@@ -56,6 +59,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "GEMINI",
     motif: "双子猫",
     symbol: "♊",
+    imageSrc: "/zodiac/gemini-cat.webp",
     luckyItem: "メモ帳",
     personality: "言葉、情報、好奇心が軽やかに動く星座です。複数の視点を行き来し、場の空気を明るくできます。",
     catFeature: "猫星では、向かい合う双子の黒猫として描きます。一匹は月を見て、一匹は人の声を聞く、二つの感覚を持つ猫です。",
@@ -70,6 +74,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "CANCER",
     motif: "蟹モチーフ",
     symbol: "♋",
+    imageSrc: "/zodiac/cancer-cat.webp",
     luckyItem: "白いマグカップ",
     personality: "守る力、共感、記憶を大切にする星座です。大切な人や場所を包み込むように整えます。",
     catFeature: "猫星では、蟹の甲羅飾りを背負った黒猫です。月の波打ち際で、家へ帰る道を覚えています。",
@@ -84,6 +89,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "LEO",
     motif: "ライオンたてがみ",
     symbol: "♌",
+    imageSrc: "/zodiac/leo-cat.webp",
     luckyItem: "金色のアクセサリー",
     personality: "表現力、誇り、祝福を受け取る力を持つ星座です。自分らしさを隠さないほど周囲を明るくします。",
     catFeature: "猫星では、金のたてがみを持つ黒猫です。夜の舞台中央で、星明かりを堂々と受け取ります。",
@@ -98,6 +104,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "VIRGO",
     motif: "百合",
     symbol: "♍",
+    imageSrc: "/zodiac/virgo-cat.webp",
     luckyItem: "細いペン",
     personality: "観察、整理、改善の力を持つ星座です。小さな違和感を見つけ、暮らしや仕事を整えます。",
     catFeature: "猫星では、百合をそばに置く黒猫です。古い机の上で、散らばった星図を一枚ずつ整えます。",
@@ -112,6 +119,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "LIBRA",
     motif: "天秤",
     symbol: "♎",
+    imageSrc: "/zodiac/libra-cat.webp",
     luckyItem: "鏡",
     personality: "調和、美意識、バランス感覚に優れた星座です。人と人の間に橋をかけ、空気を整えます。",
     catFeature: "猫星では、小さな天秤を掲げる黒猫です。金の皿に月光と言葉を乗せ、ちょうどよい重さを測ります。",
@@ -126,6 +134,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "SCORPIO",
     motif: "蠍尾",
     symbol: "♏",
+    imageSrc: "/zodiac/scorpio-cat.webp",
     luckyItem: "深紫の布",
     personality: "深い集中力、洞察、変容の力を持つ星座です。表面ではなく、物事の奥にある本音へ近づきます。",
     catFeature: "猫星では、蠍尾の装飾を持つ黒猫です。静かな水辺で、光の届かない感情を見つめています。",
@@ -140,6 +149,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "SAGITTARIUS",
     motif: "弓矢",
     symbol: "♐",
+    imageSrc: "/zodiac/sagittarius-cat.webp",
     luckyItem: "旅の写真",
     personality: "冒険、学び、遠くを見る視野を持つ星座です。今いる場所を越えて、次の可能性へ矢を放ちます。",
     catFeature: "猫星では、星の弓矢を持つ黒猫です。高い丘から夜空の一点を狙い、遠い未来へ合図を送ります。",
@@ -154,6 +164,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "CAPRICORN",
     motif: "山羊角",
     symbol: "♑",
+    imageSrc: "/zodiac/capricorn-cat.webp",
     luckyItem: "革の小物",
     personality: "責任、継続、現実を形にする力を持つ星座です。時間を味方にし、確かな階段を作ります。",
     catFeature: "猫星では、山羊角を持つ黒猫です。険しい石段を一段ずつ登り、頂上の月を見据えます。",
@@ -168,6 +179,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "AQUARIUS",
     motif: "水瓶",
     symbol: "♒",
+    imageSrc: "/zodiac/aquarius-cat.webp",
     luckyItem: "青いガラス",
     personality: "自由な発想、未来志向、独自の距離感を持つ星座です。常識の外側から新しい流れを注ぎます。",
     catFeature: "猫星では、水瓶から星水を注ぐ黒猫です。誰のものでもない夜空へ、静かなひらめきを流します。",
@@ -182,6 +194,7 @@ export const zodiacSigns: ZodiacSign[] = [
     english: "PISCES",
     motif: "魚モチーフ",
     symbol: "♓",
+    imageSrc: "/zodiac/pisces-cat.webp",
     luckyItem: "小さな鈴",
     personality: "想像力、共感、境界を越える感受性を持つ星座です。言葉にならない気配を受け取ります。",
     catFeature: "猫星では、魚の尾飾りをまとった黒猫です。星の水面を歩き、夢と現実の境目を行き来します。",
@@ -255,3 +268,4 @@ export function getRelatedZodiacSigns(currentSlug: string, limit = 3) {
     .slice(0, limit)
     .map((sign) => ({ href: `/zodiac/${sign.slug}`, label: `${sign.name} ${sign.english}` }));
 }
+
