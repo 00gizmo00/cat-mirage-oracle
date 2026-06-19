@@ -3,8 +3,9 @@ import Link from "next/link";
 import { articles } from "@/lib/articles";
 
 export const metadata: Metadata = {
-  title: "読み物一覧",
-  description: "猫星ミラージュ占譜の猫タロット、占い結果、占い帳、日常での活かし方に関する読み物一覧です。",
+  title: "読み物アーカイブ",
+  description:
+    "猫星ミラージュ占譜の猫タロット、占い結果、占い帳、日常での活かし方に関する読み物アーカイブです。",
 };
 
 export default function ArticlesPage() {
@@ -15,8 +16,10 @@ export default function ArticlesPage() {
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(217,190,119,0.16),transparent_34%),radial-gradient(circle_at_18%_86%,rgba(88,28,135,0.2),transparent_42%)]" />
           <div className="relative">
             <p className="font-serif text-[10px] font-bold tracking-[0.34em] text-amber-100/58">CAT MIRAGE ARTICLES</p>
-            <h1 className="mt-2 font-serif text-3xl font-bold leading-tight">読み物一覧</h1>
-            <p className="mt-3 text-sm leading-7 text-violet-50/72">猫タロット、占い結果、占い帳、日常での使い方についての解説記事です。</p>
+            <h1 className="mt-2 font-serif text-3xl font-bold leading-tight">読み物アーカイブ</h1>
+            <p className="mt-3 text-sm leading-7 text-violet-50/72">
+              猫タロット、占い結果、占い帳、日常での使い方についての読み物をまとめています。
+            </p>
           </div>
         </header>
         <div className="grid gap-4 px-5 py-6">

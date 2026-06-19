@@ -2,15 +2,13 @@ import Link from "next/link";
 
 const footerLinks = [
   { href: "/about", label: "このサイトについて" },
-  { href: "/how-to-use", label: "使い方" },
-  { href: "/articles", label: "読み物一覧" },
+  { href: "/guide", label: "ガイド" },
   { href: "/tarot", label: "猫タロット解説" },
   { href: "/zodiac", label: "12星座猫図鑑" },
   { href: "/journal", label: "占い帳について" },
+  { href: "/contact", label: "お問い合わせ" },
   { href: "/privacy", label: "プライバシーポリシー" },
   { href: "/terms", label: "利用規約" },
-  { href: "/disclaimer", label: "免責事項" },
-  { href: "/contact", label: "お問い合わせ" },
 ];
 
 export function SiteFooter() {
