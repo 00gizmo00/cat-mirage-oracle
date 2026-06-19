@@ -9,6 +9,8 @@ type AdBannerProps = {
   slotId?: string;
 };
 
+const showAdPlaceholders = false;
+
 const adSlots: Record<AdBannerVariant, string> = {
   "top-sticky": "cat-mirage-top-sticky-demo",
   "result-inline": "cat-mirage-result-inline-demo",
@@ -40,7 +42,7 @@ export function AdBanner({ variant = "top-sticky", slotId }: AdBannerProps) {
     setAdFree(window.localStorage.getItem("cat_mirage_ad_free") === "true");
   }, []);
 
-  if (adFree) return null;
+  if (!showAdPlaceholders || adFree) return null;
 
   return (
     <aside
