@@ -1281,6 +1281,85 @@ function TarotCatalog() {
 
 function CatStarRanking({ dateKey }: { dateKey: string }) {
   const ranking = useMemo(() => getDailyZodiacRanking(dateKey), [dateKey]);
+  const [showAll, setShowAll] = useState(false);
+  const topThree = ranking.slice(0, 3);
+  const rest = ranking.slice(3);
+
+  return (
+    <section className="px-4 pb-4">
+      <div className="relative overflow-hidden rounded-[24px] border border-cyan-100/18 bg-[#071421]/82 p-4 shadow-[0_18px_48px_rgba(0,0,0,0.26)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_24%_0%,rgba(125,211,252,0.14),transparent_34%),radial-gradient(circle_at_90%_88%,rgba(217,190,119,0.12),transparent_42%)]" />
+        <div className="relative">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-amber-100/58">TODAY'S CAT STAR RANKING</p>
+              <h2 className="mt-1 text-xl font-black text-white">今日の猫星ランキング</h2>
+              <p className="mt-1 text-[11px] font-bold text-cyan-50/54">上位3星座だけを先にお知らせします</p>
+            </div>
+            <a
+              className="shrink-0 rounded-full border border-cyan-100/25 bg-cyan-100/[0.08] px-3 py-2 text-[11px] font-black text-cyan-50"
+              href="/zodiac"
+            >
+              星座図鑑
+            </a>
+          </div>
+
+          <div className="mt-4 grid gap-2">
+            {topThree.map((sign) => (
+              <a
+                className="grid grid-cols-[2.25rem_3rem_1fr] items-center gap-2 rounded-[22px] border border-amber-100/24 bg-black/28 p-3 shadow-[0_0_24px_rgba(217,190,119,0.08)] transition active:scale-[0.99]"
+                href={`/zodiac/${sign.slug}`}
+                key={sign.slug}
+              >
+                <div className="grid h-9 w-9 place-items-center rounded-2xl border border-amber-100/28 bg-amber-100/[0.08] text-base font-black text-amber-100">
+                  {sign.rank}
+                </div>
+                <ZodiacCatIcon sign={sign} size="sm" />
+                <div className="min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="truncate text-sm font-black text-white">{sign.name}</p>
+                    <p className="shrink-0 text-[10px] font-bold text-amber-100/54">{sign.luckyColor}</p>
+                  </div>
+                  <p className="mt-1 line-clamp-1 text-[11px] font-bold text-cyan-50/60">{sign.luckyAction}</p>
+                  <p className="mt-1 line-clamp-1 text-[11px] text-white/46">{sign.catMessage}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          <button
+            className="mt-3 w-full rounded-2xl border border-cyan-100/18 bg-cyan-100/[0.06] px-4 py-3 text-xs font-black text-cyan-50 transition active:scale-[0.99]"
+            onClick={() => setShowAll((current) => !current)}
+            type="button"
+          >
+            {showAll ? "4位以下を閉じる" : "4位から12位を見る"}
+          </button>
+
+          {showAll ? (
+            <div className="mt-3 grid gap-2">
+              {rest.map((sign) => (
+                <a
+                  className="grid grid-cols-[2rem_1fr] gap-2 rounded-2xl border border-white/10 bg-black/18 p-3 transition active:scale-[0.99]"
+                  href={`/zodiac/${sign.slug}`}
+                  key={sign.slug}
+                >
+                  <div className="text-center text-sm font-black text-white/42">{sign.rank}</div>
+                  <div className="min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="truncate text-sm font-black text-white/82">{sign.name}</p>
+                      <p className="shrink-0 text-[10px] font-bold text-amber-100/46">{sign.luckyColor}</p>
+                    </div>
+                    <p className="mt-1 line-clamp-1 text-[11px] font-bold text-cyan-50/50">{sign.luckyAction}</p>
+                    <p className="mt-1 line-clamp-1 text-[11px] text-white/38">{sign.catMessage}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  );
   const top = ranking[0];
 
   return (
@@ -1642,9 +1721,105 @@ export function SeriousOracleApp() {
             </p>
           </header>
 
-          <CatStarRanking dateKey={todayKey} />
-
           <section className="px-4">
+            <div className="relative overflow-hidden rounded-[24px] border border-cyan-100/18 bg-[#081624]/86 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(125,211,252,0.12),transparent_34%),radial-gradient(circle_at_88%_78%,rgba(217,190,119,0.1),transparent_42%)]" />
+              <div className="relative">
+                <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/58">TODAY'S ORACLE</p>
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  <div className="rounded-2xl border border-cyan-100/16 bg-black/28 p-3 text-center">
+                    <p className="text-[10px] font-bold text-cyan-50/48">連続鑑定</p>
+                    <p className="mt-1 text-xl font-black text-amber-100">{streak.streak}</p>
+                  </div>
+                  <div className="rounded-2xl border border-cyan-100/16 bg-black/28 p-3 text-center">
+                    <p className="text-[10px] font-bold text-cyan-50/48">鑑定履歴</p>
+                    <p className="mt-1 text-xl font-black text-cyan-100">{history.length}</p>
+                  </div>
+                  <div className="rounded-2xl border border-cyan-100/16 bg-black/28 p-3 text-center">
+                    <p className="text-[10px] font-bold text-cyan-50/48">今日</p>
+                    <p className="mt-1 text-sm font-black text-fuchsia-100">{todayDone ? "済" : "未"}</p>
+                  </div>
+                </div>
+
+                <div className="mt-3 rounded-2xl border border-amber-100/22 bg-amber-100/[0.07] p-3">
+                  <p className="font-serif text-[10px] font-bold tracking-[0.24em] text-amber-100/64">DAILY QUESTION</p>
+                  <p className="mt-1 text-sm font-bold leading-6 text-amber-50">{dailyPrompt}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-4 px-4">
+            <div className="relative overflow-hidden rounded-[24px] border border-cyan-100/18 bg-[#08121e]/88 p-4 shadow-[0_16px_44px_rgba(0,0,0,0.24)]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(125,211,252,0.1),transparent_32%)]" />
+              <div className="relative">
+                <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/58">YOUR STAR KEY</p>
+                <h2 className="mt-1 text-lg font-black text-white">あなたの星を読む情報</h2>
+                <div className="mt-3 grid gap-3">
+                  <label className="grid gap-1">
+                    <span className="text-xs font-bold text-cyan-50/64">名前</span>
+                    <input
+                      className="rounded-2xl border border-cyan-100/16 bg-black/30 px-4 py-3 text-sm font-bold text-white outline-none transition focus:border-amber-100/45"
+                      onChange={(event) => updateProfile({ ...profile, name: event.target.value })}
+                      placeholder="例: 星野 月"
+                      value={profile.name}
+                    />
+                  </label>
+                  <label className="grid gap-1">
+                    <span className="text-xs font-bold text-cyan-50/64">生年月日</span>
+                    <input
+                      className="rounded-2xl border border-cyan-100/16 bg-black/30 px-4 py-3 text-sm font-bold text-white outline-none transition focus:border-amber-100/45"
+                      inputMode="numeric"
+                      onChange={(event) => updateProfile({ ...profile, birthDate: event.target.value })}
+                      placeholder="1995/01/01"
+                      value={profile.birthDate}
+                    />
+                    <span className={`text-[11px] font-bold ${birthDateValid ? "text-cyan-50/42" : "text-rose-200/80"}`}>
+                      例: 1995/01/01、1995-1-1、1995年1月1日
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-4 px-4">
+            <div className="rounded-[24px] border border-amber-100/22 bg-[#130c20]/88 p-4 shadow-[0_18px_48px_rgba(217,190,119,0.08)]">
+              <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-amber-100/58">ORACLE THEME</p>
+              <div className="mt-3 grid grid-cols-5 gap-1.5">
+                {themeOptions.map((theme) => {
+                  const active = theme.id === profile.theme;
+                  return (
+                    <button
+                      className={`rounded-2xl border px-1 py-2 text-center transition active:scale-95 disabled:pointer-events-none disabled:opacity-40 ${
+                        active
+                          ? "border-amber-100/48 bg-amber-100/14 text-white shadow-[0_0_22px_rgba(217,190,119,0.16)]"
+                          : "border-violet-100/12 bg-black/24 text-violet-50/58"
+                      }`}
+                      disabled={isReading}
+                      key={theme.id}
+                      onClick={() => updateProfile({ ...profile, theme: theme.id })}
+                      type="button"
+                    >
+                      <span className="block text-[11px] font-black">{theme.label}</span>
+                      <span className="mt-0.5 block text-[9px] font-bold opacity-60">{theme.caption}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                className="mt-4 w-full rounded-2xl border border-amber-100/38 bg-gradient-to-r from-[#27154a] via-[#6e3565] to-[#c59b4d] px-5 py-4 text-base font-black tracking-[0.12em] text-white shadow-[0_0_34px_rgba(217,190,119,0.24)] transition active:scale-[0.98] disabled:opacity-45"
+                disabled={isReading || !profile.name.trim() || !birthDateValid}
+                onClick={runReading}
+                type="button"
+              >
+                {isReading ? "猫星盤を展開中..." : todayDone ? "今日の占譜を読み直す" : "今日の占譜を開く"}
+              </button>
+            </div>
+          </section>
+
+          <section className="hidden">
             <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
               <div className="mb-4 grid grid-cols-3 gap-2">
                 <div className="rounded-2xl border border-white/10 bg-black/22 p-3 text-center">
@@ -1668,7 +1843,7 @@ export function SeriousOracleApp() {
             </div>
           </section>
 
-          <section className="mt-4 px-4">
+          <section className="hidden">
             <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
               <div className="grid gap-3">
                 <label className="grid gap-1">
@@ -1727,6 +1902,8 @@ export function SeriousOracleApp() {
               </button>
             </div>
           </section>
+
+          <CatStarRanking dateKey={todayKey} />
 
           {isReading ? (
             <section className="px-4 py-8">
