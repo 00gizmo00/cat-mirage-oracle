@@ -675,7 +675,10 @@ function nextStreak(previous: DailyStreak | null, todayKey: string): DailyStreak
 }
 
 function arcanaKey(arcana: string) {
-  return Object.keys(englishArcana).find((key) => arcana.includes(key)) ?? arcana;
+  if (englishArcana[arcana]) return arcana;
+  return Object.keys(englishArcana)
+    .sort((left, right) => right.length - left.length)
+    .find((key) => arcana.includes(key)) ?? arcana;
 }
 
 function createCatalogCard(key: string): TarotDraw {
@@ -800,7 +803,8 @@ function DailyTarotFeature({ dateKey }: { dateKey: string }) {
           </div>
           <div className="min-w-0">
             <p className="font-serif text-[10px] font-bold tracking-[0.3em] text-amber-100/58">TODAY'S CARD</p>
-            <h2 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">{daily.name}</h2>
+            <h2 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">今日の一枚</h2>
+            <p className="mt-1 truncate text-sm font-black text-amber-50">{daily.name}</p>
             <p className="mt-1 truncate font-serif text-[10px] font-bold tracking-[0.2em] text-cyan-100/58">{daily.english}</p>
             <div className="mt-3 rounded-2xl border border-cyan-100/14 bg-cyan-100/[0.055] p-3">
               <p className="text-[11px] font-bold text-cyan-50/54">今日のテーマ</p>
