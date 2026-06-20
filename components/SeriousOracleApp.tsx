@@ -19,6 +19,7 @@ const profileStorageKey = "serious-oracle-profile";
 const readingsStorageKey = "serious-oracle-readings";
 const streakStorageKey = "serious-oracle-streak";
 const maxSavedReadings = 20;
+const isAdsenseReviewMode = process.env.NEXT_PUBLIC_ADSENSE_REVIEW_MODE === "true";
 
 type DailyStreak = {
   lastDateKey: string;
@@ -1731,6 +1732,8 @@ export function SeriousOracleApp() {
             </p>
           </header>
 
+          <CatStarRanking dateKey={todayKey} />
+
           <section className="px-4">
             <div className="relative overflow-hidden rounded-[24px] border border-cyan-100/18 bg-[#081624]/86 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(125,211,252,0.12),transparent_34%),radial-gradient(circle_at_88%_78%,rgba(217,190,119,0.1),transparent_42%)]" />
@@ -1830,92 +1833,6 @@ export function SeriousOracleApp() {
               </button>
             </div>
           </section>
-
-          <section className="hidden">
-            <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
-              <div className="mb-4 grid grid-cols-3 gap-2">
-                <div className="rounded-2xl border border-white/10 bg-black/22 p-3 text-center">
-                  <p className="text-[10px] font-bold text-white/38">連続鑑定</p>
-                  <p className="mt-1 text-xl font-black text-amber-100">{streak.streak}</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-black/22 p-3 text-center">
-                  <p className="text-[10px] font-bold text-white/38">鑑定履歴</p>
-                  <p className="mt-1 text-xl font-black text-cyan-100">{history.length}</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-black/22 p-3 text-center">
-                  <p className="text-[10px] font-bold text-white/38">今日</p>
-                  <p className="mt-1 text-sm font-black text-fuchsia-100">{todayDone ? "済" : "未"}</p>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-amber-100/18 bg-amber-100/[0.07] p-3">
-                <p className="font-serif text-[10px] font-bold tracking-[0.24em] text-amber-100/60">DAILY QUESTION</p>
-                <p className="mt-1 text-sm font-bold leading-6 text-amber-50">{dailyPrompt}</p>
-              </div>
-            </div>
-          </section>
-
-          <section className="hidden">
-            <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
-              <div className="grid gap-3">
-                <label className="grid gap-1">
-                  <span className="text-xs font-bold text-white/55">名前</span>
-                  <input
-                    className="rounded-2xl border border-white/10 bg-black/28 px-4 py-3 text-sm font-bold text-white outline-none focus:border-amber-100/45"
-                    onChange={(event) => updateProfile({ ...profile, name: event.target.value })}
-                    placeholder="例: 星野 月"
-                    value={profile.name}
-                  />
-                </label>
-                <label className="grid gap-1">
-                  <span className="text-xs font-bold text-white/55">生年月日</span>
-                  <input
-                    className="rounded-2xl border border-white/10 bg-black/28 px-4 py-3 text-sm font-bold text-white outline-none focus:border-amber-100/45"
-                    inputMode="numeric"
-                    onChange={(event) => updateProfile({ ...profile, birthDate: event.target.value })}
-                    placeholder="1995/01/01"
-                    value={profile.birthDate}
-                  />
-                  <span className={`text-[11px] font-bold ${birthDateValid ? "text-white/34" : "text-rose-200/80"}`}>
-                    例: 1995/01/01、1995-1-1、1995年1月1日
-                  </span>
-                </label>
-              </div>
-
-              <div className="mt-4 grid grid-cols-5 gap-1.5">
-                {themeOptions.map((theme) => {
-                  const active = theme.id === profile.theme;
-                  return (
-                    <button
-                      className={`rounded-2xl border px-1 py-2 text-center transition active:scale-95 disabled:pointer-events-none disabled:opacity-40 ${
-                        active
-                          ? "border-amber-100/45 bg-amber-100/12 text-white shadow-[0_0_20px_rgba(217,190,119,0.16)]"
-                          : "border-white/10 bg-black/20 text-white/48"
-                      }`}
-                      disabled={isReading}
-                      key={theme.id}
-                      onClick={() => updateProfile({ ...profile, theme: theme.id })}
-                      type="button"
-                    >
-                      <span className="block text-[11px] font-black">{theme.label}</span>
-                      <span className="mt-0.5 block text-[9px] font-bold opacity-60">{theme.caption}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button
-                className="mt-4 w-full rounded-2xl border border-amber-100/35 bg-gradient-to-r from-[#3b1f5f] via-[#6e3565] to-[#c59b4d] px-5 py-4 text-base font-black tracking-[0.12em] text-white shadow-[0_0_30px_rgba(217,190,119,0.22)] transition active:scale-[0.98] disabled:opacity-45"
-                disabled={isReading || !profile.name.trim() || !birthDateValid}
-                onClick={runReading}
-                type="button"
-              >
-                {isReading ? "猫星盤を展開中..." : todayDone ? "今日の占譜を読み直す" : "今日の占譜を開く"}
-              </button>
-            </div>
-          </section>
-
-          <CatStarRanking dateKey={todayKey} />
 
           {isReading ? (
             <section className="px-4 py-8">
@@ -2045,7 +1962,9 @@ export function SeriousOracleApp() {
 
           <footer className="px-5 pb-8 text-center text-[11px] leading-5 text-white/34">
             <p>この鑑定はエンタメ用途の占いコンテンツです。医療・法律・金融などの重要な判断は専門家へご相談ください。</p>
-            <p className="mt-2">広告枠は将来のAdSense/AdMob/リワード広告差し替えを想定したダミー表示です。</p>
+            {!isAdsenseReviewMode ? (
+              <p className="mt-2">広告枠は将来のAdSense/AdMob/リワード広告差し替えを想定したダミー表示です。</p>
+            ) : null}
           </footer>
         </div>
       </div>

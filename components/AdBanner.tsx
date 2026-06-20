@@ -10,6 +10,7 @@ type AdBannerProps = {
 };
 
 const showAdPlaceholders = false;
+const isAdsenseReviewMode = process.env.NEXT_PUBLIC_ADSENSE_REVIEW_MODE === "true";
 
 const adSlots: Record<AdBannerVariant, string> = {
   "top-sticky": "cat-mirage-top-sticky-demo",
@@ -42,7 +43,7 @@ export function AdBanner({ variant = "top-sticky", slotId }: AdBannerProps) {
     setAdFree(window.localStorage.getItem("cat_mirage_ad_free") === "true");
   }, []);
 
-  if (!showAdPlaceholders || adFree) return null;
+  if (isAdsenseReviewMode || !showAdPlaceholders || adFree) return null;
 
   return (
     <aside
