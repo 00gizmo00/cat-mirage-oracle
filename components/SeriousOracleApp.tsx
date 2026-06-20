@@ -39,6 +39,14 @@ const themeOptions: { id: ReadingTheme; label: string; caption: string }[] = [
   { id: "self", label: "自己", caption: "本音と整理" },
 ];
 
+const themeDisplay: Record<ReadingTheme, { label: string; caption: string }> = {
+  love: { label: "恋愛", caption: "縁と選択" },
+  work: { label: "仕事", caption: "転機と評価" },
+  money: { label: "金運", caption: "循環と管理" },
+  relation: { label: "対人", caption: "距離と信頼" },
+  self: { label: "自己", caption: "本音と整理" },
+};
+
 const englishArcana: Record<string, string> = {
   教皇: "THE HIEROPHANT",
   愚者: "THE FOOL",
@@ -1789,20 +1797,22 @@ export function SeriousOracleApp() {
               <div className="mt-3 grid grid-cols-5 gap-1.5">
                 {themeOptions.map((theme) => {
                   const active = theme.id === profile.theme;
+                  const display = themeDisplay[theme.id];
                   return (
                     <button
                       className={`rounded-2xl border px-1 py-2 text-center transition active:scale-95 disabled:pointer-events-none disabled:opacity-40 ${
                         active
-                          ? "border-amber-100/48 bg-amber-100/14 text-white shadow-[0_0_22px_rgba(217,190,119,0.16)]"
-                          : "border-violet-100/12 bg-black/24 text-violet-50/58"
+                          ? "border-amber-200/70 bg-gradient-to-b from-amber-100/26 to-amber-400/12 text-amber-50 shadow-[0_0_26px_rgba(251,191,36,0.26)]"
+                          : "border-violet-100/12 bg-black/24 text-violet-50/58 hover:border-cyan-100/22 hover:text-cyan-50/78"
                       }`}
+                      aria-pressed={active}
                       disabled={isReading}
                       key={theme.id}
                       onClick={() => updateProfile({ ...profile, theme: theme.id })}
                       type="button"
                     >
-                      <span className="block text-[11px] font-black">{theme.label}</span>
-                      <span className="mt-0.5 block text-[9px] font-bold opacity-60">{theme.caption}</span>
+                      <span className="block text-[11px] font-black">{display.label}</span>
+                      <span className="mt-0.5 block text-[9px] font-bold opacity-70">{display.caption}</span>
                     </button>
                   );
                 })}
