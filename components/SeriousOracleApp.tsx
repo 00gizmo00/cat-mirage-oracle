@@ -1315,18 +1315,20 @@ function CatStarRanking({ dateKey }: { dateKey: string }) {
           <div className="mt-4 grid gap-2">
             {topThree.map((sign) => (
               <a
-                className="grid grid-cols-[2.25rem_3rem_1fr] items-center gap-2 rounded-[22px] border border-amber-100/24 bg-black/28 p-3 shadow-[0_0_24px_rgba(217,190,119,0.08)] transition active:scale-[0.99]"
+                className="grid grid-cols-[2.25rem_4.25rem_minmax(0,1fr)] items-center gap-3 rounded-[22px] border border-amber-100/24 bg-black/28 p-3 shadow-[0_0_24px_rgba(217,190,119,0.08)] transition active:scale-[0.99]"
                 href={`/zodiac/${sign.slug}`}
                 key={sign.slug}
               >
                 <div className="grid h-9 w-9 place-items-center rounded-2xl border border-amber-100/28 bg-amber-100/[0.08] text-base font-black text-amber-100">
                   {sign.rank}
                 </div>
-                <ZodiacCatIcon sign={sign} size="sm" />
+                <div className="w-[4.25rem] shrink-0">
+                  <ZodiacCatIcon sign={sign} size="sm" />
+                </div>
                 <div className="min-w-0">
-                  <div className="flex items-center justify-between gap-2">
+                  <div className="flex min-w-0 items-center justify-between gap-2">
                     <p className="truncate text-sm font-black text-white">{sign.name}</p>
-                    <p className="shrink-0 text-[10px] font-bold text-amber-100/54">{sign.luckyColor}</p>
+                    <p className="max-w-[4.5rem] shrink-0 truncate text-right text-[10px] font-bold text-amber-100/54">{sign.luckyColor}</p>
                   </div>
                   <p className="mt-1 line-clamp-1 text-[11px] font-bold text-cyan-50/60">{sign.luckyAction}</p>
                   <p className="mt-1 line-clamp-1 text-[11px] text-white/46">{sign.catMessage}</p>
