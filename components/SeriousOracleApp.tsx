@@ -48,6 +48,58 @@ const themeDisplay: Record<ReadingTheme, { label: string; caption: string }> = {
   self: { label: "自己", caption: "本音と整理" },
 };
 
+const tarotDisplayByEnglish: Record<string, { name: string; slug: string }> = {
+  "THE FOOL": { name: "愚者", slug: "fool" },
+  "THE MAGICIAN": { name: "魔術師", slug: "magician" },
+  "THE HIGH PRIESTESS": { name: "女教皇", slug: "high-priestess" },
+  "THE EMPRESS": { name: "女帝", slug: "empress" },
+  "THE EMPEROR": { name: "皇帝", slug: "emperor" },
+  "THE HIEROPHANT": { name: "教皇", slug: "hierophant" },
+  "THE LOVERS": { name: "恋人", slug: "lovers" },
+  "THE CHARIOT": { name: "戦車", slug: "chariot" },
+  STRENGTH: { name: "力", slug: "strength" },
+  "THE HERMIT": { name: "隠者", slug: "hermit" },
+  "WHEEL OF FORTUNE": { name: "運命の輪", slug: "wheel-of-fortune" },
+  JUSTICE: { name: "正義", slug: "justice" },
+  "THE HANGED CAT": { name: "吊るされた猫", slug: "hanged-cat" },
+  DEATH: { name: "死神", slug: "death" },
+  TEMPERANCE: { name: "節制", slug: "temperance" },
+  "THE DEVIL": { name: "悪魔", slug: "devil" },
+  "THE TOWER": { name: "塔", slug: "tower" },
+  "THE STAR": { name: "星", slug: "star" },
+  "THE MOON": { name: "月", slug: "moon" },
+  "THE SUN": { name: "太陽", slug: "sun" },
+  JUDGEMENT: { name: "審判", slug: "judgement" },
+  "THE WORLD": { name: "世界", slug: "world" },
+};
+
+const dailyTarotThemes = [
+  "気持ちの輪郭を整える日",
+  "小さな選択が流れを変える日",
+  "無理に急がず、兆しを拾う日",
+  "人との距離感を見直す日",
+  "本音を静かに言葉へ戻す日",
+  "受け取る力を思い出す日",
+];
+
+const dailyCatMessages = [
+  "焦らなくて大丈夫。今日は、最初に気になったことの中に合図があります。",
+  "遠回りに見える道ほど、今のあなたにはやさしい近道かもしれません。",
+  "返事を急がず、心が少し軽くなる方を選んでみてください。",
+  "完璧な答えより、今日ひとつ動ける小さな手がかりを大切に。",
+  "言葉にする前の違和感を、今日はそっと信じてみてください。",
+];
+
+const dailyLuckyColors = ["月白", "深藍", "金霞", "藤紫", "星灰", "薄紅", "夜明け青"];
+const dailySmallActions = [
+  "机の上をひとつだけ片付ける",
+  "気になる人に短い言葉を返す",
+  "温かい飲み物をゆっくり飲む",
+  "予定をひとつだけ前倒しする",
+  "寝る前に今日よかったことを一行書く",
+  "迷っていることを紙に三つ書き出す",
+];
+
 const englishArcana: Record<string, string> = {
   教皇: "THE HIEROPHANT",
   愚者: "THE FOOL",
@@ -640,6 +692,36 @@ function createCatalogCard(key: string): TarotDraw {
   };
 }
 
+function hashLocal(value: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function getDailyTarotCard(dateKey: string) {
+  const seed = hashLocal(`daily-tarot-${dateKey}`);
+  const key = majorArcanaKeys[seed % majorArcanaKeys.length];
+  const card = createCatalogCard(key);
+  const english = englishArcana[key] ?? key.toUpperCase();
+  const display = tarotDisplayByEnglish[english] ?? { name: key, slug: "fool" };
+  const meaning = getTarotMeaning(english);
+
+  return {
+    card: { ...card, arcana: display.name, keyword: "今日の猫タロット" },
+    english,
+    name: display.name,
+    slug: display.slug,
+    theme: dailyTarotThemes[seed % dailyTarotThemes.length],
+    message: dailyCatMessages[(seed >> 3) % dailyCatMessages.length],
+    luckyColor: dailyLuckyColors[(seed >> 5) % dailyLuckyColors.length],
+    action: dailySmallActions[(seed >> 7) % dailySmallActions.length],
+    meaning,
+  };
+}
+
 function TarotCard({ card }: { card: TarotDraw }) {
   const [imageFailed, setImageFailed] = useState(false);
   const key = arcanaKey(card.arcana);
@@ -696,6 +778,66 @@ function TarotCard({ card }: { card: TarotDraw }) {
         ))}
       </div>
     </div>
+  );
+}
+
+function DailyTarotFeature({ dateKey }: { dateKey: string }) {
+  const daily = useMemo(() => getDailyTarotCard(dateKey), [dateKey]);
+
+  const scrollToForm = () => {
+    document.getElementById("oracle-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <section className="px-4 pb-4">
+      <div className="relative overflow-hidden rounded-[28px] border border-amber-100/22 bg-[#090817]/92 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.42)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_28%_0%,rgba(217,190,119,0.18),transparent_34%),radial-gradient(circle_at_88%_72%,rgba(125,211,252,0.12),transparent_42%)]" />
+        <div className="relative grid grid-cols-[7.5rem_minmax(0,1fr)] gap-4">
+          <div className="self-start">
+            <div className="rounded-[16px] border border-amber-100/28 bg-black/38 p-1.5 shadow-[0_0_28px_rgba(217,190,119,0.14)]">
+              <TarotCard card={daily.card} />
+            </div>
+          </div>
+          <div className="min-w-0">
+            <p className="font-serif text-[10px] font-bold tracking-[0.3em] text-amber-100/58">TODAY'S CARD</p>
+            <h2 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">{daily.name}</h2>
+            <p className="mt-1 truncate font-serif text-[10px] font-bold tracking-[0.2em] text-cyan-100/58">{daily.english}</p>
+            <div className="mt-3 rounded-2xl border border-cyan-100/14 bg-cyan-100/[0.055] p-3">
+              <p className="text-[11px] font-bold text-cyan-50/54">今日のテーマ</p>
+              <p className="mt-1 text-sm font-black leading-6 text-white">{daily.theme}</p>
+            </div>
+            <p className="mt-3 line-clamp-3 text-xs font-bold leading-6 text-violet-50/72">{daily.message}</p>
+          </div>
+        </div>
+
+        <div className="relative mt-4 grid grid-cols-2 gap-2">
+          <div className="rounded-2xl border border-white/10 bg-black/24 p-3">
+            <p className="text-[10px] font-bold text-white/38">ラッキーカラー</p>
+            <p className="mt-1 text-sm font-black text-amber-50">{daily.luckyColor}</p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-black/24 p-3">
+            <p className="text-[10px] font-bold text-white/38">今日の小さな行動</p>
+            <p className="mt-1 line-clamp-2 text-xs font-black leading-5 text-cyan-50">{daily.action}</p>
+          </div>
+        </div>
+
+        <div className="relative mt-4 grid grid-cols-[1fr_auto] gap-2">
+          <button
+            className="rounded-2xl border border-amber-100/38 bg-gradient-to-r from-[#2d174f] via-[#703769] to-[#c59b4d] px-4 py-3 text-sm font-black text-white shadow-[0_0_26px_rgba(217,190,119,0.22)] transition active:scale-[0.98]"
+            onClick={scrollToForm}
+            type="button"
+          >
+            詳しく占う
+          </button>
+          <a
+            className="grid place-items-center rounded-2xl border border-cyan-100/20 bg-cyan-100/[0.06] px-3 py-3 text-[11px] font-black text-cyan-50"
+            href={`/tarot/${daily.slug}`}
+          >
+            解説
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -1627,6 +1769,15 @@ export function SeriousOracleApp() {
   const dailyPrompt = useMemo(() => getDailyPrompt(todayKey), [todayKey]);
   const todayDone = history.some((item) => item.dateKey === todayKey);
   const birthDateValid = Boolean(normalizeBirthDate(profile.birthDate));
+  const favoriteCount = history.filter((item) => item.isFavorite).length;
+  const canRunReading = Boolean(profile.name.trim()) && birthDateValid && !isReading;
+  const readingButtonLabel = !profile.name.trim()
+    ? "名前を入力してください"
+    : !birthDateValid
+      ? "生年月日を入力してください"
+      : isReading
+        ? "猫星盤を展開中..."
+        : "今日の占譜を開く";
 
   useEffect(() => {
     const storage = window.localStorage;
@@ -1714,8 +1865,8 @@ export function SeriousOracleApp() {
             <AdBanner variant="top-sticky" />
           </div>
 
-          <header className="px-5 pb-4 pt-4 text-center">
-            <div className="mx-auto mb-3 w-[min(68vw,230px)] overflow-hidden rounded-full border border-amber-100/24 bg-black/35 p-1.5 shadow-[0_0_42px_rgba(217,190,119,0.16)]">
+          <header className="px-5 pb-3 pt-4 text-center">
+            <div className="mx-auto mb-3 w-[min(54vw,184px)] overflow-hidden rounded-full border border-amber-100/24 bg-black/35 p-1.5 shadow-[0_0_42px_rgba(217,190,119,0.16)]">
               <img
                 alt="猫星ミラージュ占譜のロゴ"
                 className="aspect-square w-full rounded-full object-cover"
@@ -1727,110 +1878,89 @@ export function SeriousOracleApp() {
             <h1 className="mt-1 font-serif text-3xl font-bold tracking-[0.03em] text-white drop-shadow-[0_0_22px_rgba(217,190,119,0.22)]">
               猫星ミラージュ占譜
             </h1>
-            <p className="mx-auto mt-2 max-w-[20rem] text-xs leading-5 text-white/50">
-              姓名判断、星の暦、猫タロットを重ねて今日の流れを読む複合鑑定。
+            <p className="mx-auto mt-2 max-w-[20rem] text-xs font-bold leading-5 text-violet-50/62">
+              名前と誕生日から、今日の恋愛・仕事・気持ちの流れを猫タロットがそっと読み解きます。
             </p>
           </header>
 
-          <CatStarRanking dateKey={todayKey} />
+          <DailyTarotFeature dateKey={todayKey} />
 
-          <section className="px-4">
-            <div className="relative overflow-hidden rounded-[24px] border border-cyan-100/18 bg-[#081624]/86 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(125,211,252,0.12),transparent_34%),radial-gradient(circle_at_88%_78%,rgba(217,190,119,0.1),transparent_42%)]" />
+          <section className="mt-1 px-4" id="oracle-form">
+            <div className="relative overflow-hidden rounded-[28px] border border-cyan-100/20 bg-[#08121e]/92 p-4 shadow-[0_18px_58px_rgba(0,0,0,0.34)] scroll-mt-4">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(125,211,252,0.12),transparent_32%),radial-gradient(circle_at_86%_90%,rgba(217,190,119,0.1),transparent_42%)]" />
               <div className="relative">
-                <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/58">TODAY'S ORACLE</p>
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  <div className="rounded-2xl border border-cyan-100/16 bg-black/28 p-3 text-center">
-                    <p className="text-[10px] font-bold text-cyan-50/48">連続鑑定</p>
-                    <p className="mt-1 text-xl font-black text-amber-100">{streak.streak}</p>
-                  </div>
-                  <div className="rounded-2xl border border-cyan-100/16 bg-black/28 p-3 text-center">
-                    <p className="text-[10px] font-bold text-cyan-50/48">鑑定履歴</p>
-                    <p className="mt-1 text-xl font-black text-cyan-100">{history.length}</p>
-                  </div>
-                  <div className="rounded-2xl border border-cyan-100/16 bg-black/28 p-3 text-center">
-                    <p className="text-[10px] font-bold text-cyan-50/48">今日</p>
-                    <p className="mt-1 text-sm font-black text-fuchsia-100">{todayDone ? "済" : "未"}</p>
-                  </div>
-                </div>
+                <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/58">PERSONAL ORACLE</p>
+                <h2 className="mt-1 text-2xl font-black text-white">あなたの今日を読む</h2>
+                <p className="mt-2 rounded-2xl border border-cyan-100/14 bg-cyan-100/[0.055] p-3 text-xs font-bold leading-6 text-cyan-50/66">
+                  名前と生年月日は鑑定にのみ使います。履歴は端末内に保存され、外部送信されません。
+                </p>
 
-                <div className="mt-3 rounded-2xl border border-amber-100/22 bg-amber-100/[0.07] p-3">
-                  <p className="font-serif text-[10px] font-bold tracking-[0.24em] text-amber-100/64">DAILY QUESTION</p>
-                  <p className="mt-1 text-sm font-bold leading-6 text-amber-50">{dailyPrompt}</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="mt-4 px-4">
-            <div className="relative overflow-hidden rounded-[24px] border border-cyan-100/18 bg-[#08121e]/88 p-4 shadow-[0_16px_44px_rgba(0,0,0,0.24)]">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(125,211,252,0.1),transparent_32%)]" />
-              <div className="relative">
-                <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/58">YOUR STAR KEY</p>
-                <h2 className="mt-1 text-lg font-black text-white">あなたの星を読む情報</h2>
-                <div className="mt-3 grid gap-3">
+                <div className="mt-4 grid gap-3">
                   <label className="grid gap-1">
-                    <span className="text-xs font-bold text-cyan-50/64">名前</span>
+                    <span className="text-xs font-black text-cyan-50/68">Step 1 名前</span>
                     <input
-                      className="rounded-2xl border border-cyan-100/16 bg-black/30 px-4 py-3 text-sm font-bold text-white outline-none transition focus:border-amber-100/45"
+                      className="rounded-2xl border border-cyan-100/18 bg-black/32 px-4 py-3 text-sm font-bold text-white outline-none transition placeholder:text-white/25 focus:border-amber-100/48"
                       onChange={(event) => updateProfile({ ...profile, name: event.target.value })}
                       placeholder="例: 星野 月"
                       value={profile.name}
                     />
                   </label>
                   <label className="grid gap-1">
-                    <span className="text-xs font-bold text-cyan-50/64">生年月日</span>
+                    <span className="text-xs font-black text-cyan-50/68">Step 2 生年月日</span>
                     <input
-                      className="rounded-2xl border border-cyan-100/16 bg-black/30 px-4 py-3 text-sm font-bold text-white outline-none transition focus:border-amber-100/45"
+                      className="rounded-2xl border border-cyan-100/18 bg-black/32 px-4 py-3 text-sm font-bold text-white outline-none transition placeholder:text-white/25 focus:border-amber-100/48"
                       inputMode="numeric"
                       onChange={(event) => updateProfile({ ...profile, birthDate: event.target.value })}
                       placeholder="1995/01/01"
                       value={profile.birthDate}
                     />
-                    <span className={`text-[11px] font-bold ${birthDateValid ? "text-cyan-50/42" : "text-rose-200/80"}`}>
+                    <span className={"text-[11px] font-bold " + (birthDateValid ? "text-cyan-50/42" : "text-rose-200/80")}>
                       例: 1995/01/01、1995-1-1、1995年1月1日
                     </span>
                   </label>
                 </div>
-              </div>
-            </div>
-          </section>
 
-          <section className="mt-4 px-4">
-            <div className="rounded-[24px] border border-amber-100/22 bg-[#130c20]/88 p-4 shadow-[0_18px_48px_rgba(217,190,119,0.08)]">
-              <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-amber-100/58">ORACLE THEME</p>
-              <div className="mt-3 grid grid-cols-5 gap-1.5">
-                {themeOptions.map((theme) => {
-                  const active = theme.id === profile.theme;
-                  const display = themeDisplay[theme.id];
-                  return (
-                    <button
-                      className={`rounded-2xl border px-1 py-2 text-center transition active:scale-95 disabled:pointer-events-none disabled:opacity-40 ${
-                        active
-                          ? "border-amber-200/70 bg-gradient-to-b from-amber-100/26 to-amber-400/12 text-amber-50 shadow-[0_0_26px_rgba(251,191,36,0.26)]"
-                          : "border-violet-100/12 bg-black/24 text-violet-50/58 hover:border-cyan-100/22 hover:text-cyan-50/78"
-                      }`}
-                      aria-pressed={active}
-                      disabled={isReading}
-                      key={theme.id}
-                      onClick={() => updateProfile({ ...profile, theme: theme.id })}
-                      type="button"
-                    >
-                      <span className="block text-[11px] font-black">{display.label}</span>
-                      <span className="mt-0.5 block text-[9px] font-bold opacity-70">{display.caption}</span>
-                    </button>
-                  );
-                })}
-              </div>
+                <div className="mt-4">
+                  <p className="text-xs font-black text-amber-100/68">Step 3 テーマ</p>
+                  <div className="mt-2 grid grid-cols-5 gap-1.5">
+                    {themeOptions.map((theme) => {
+                      const active = theme.id === profile.theme;
+                      const display = themeDisplay[theme.id];
+                      return (
+                        <button
+                          className={
+                            active
+                              ? "rounded-2xl border border-amber-200/70 bg-gradient-to-b from-amber-100/26 to-amber-400/12 px-1 py-2 text-center text-amber-50 shadow-[0_0_26px_rgba(251,191,36,0.26)] transition active:scale-95 disabled:pointer-events-none disabled:opacity-40"
+                              : "rounded-2xl border border-violet-100/12 bg-black/24 px-1 py-2 text-center text-violet-50/58 transition hover:border-cyan-100/22 hover:text-cyan-50/78 active:scale-95 disabled:pointer-events-none disabled:opacity-40"
+                          }
+                          aria-pressed={active}
+                          disabled={isReading}
+                          key={theme.id}
+                          onClick={() => updateProfile({ ...profile, theme: theme.id })}
+                          type="button"
+                        >
+                          <span className="block text-[11px] font-black">{display.label}</span>
+                          <span className="mt-0.5 block text-[9px] font-bold opacity-70">{display.caption}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
 
-              <button
-                className="mt-4 w-full rounded-2xl border border-amber-100/38 bg-gradient-to-r from-[#27154a] via-[#6e3565] to-[#c59b4d] px-5 py-4 text-base font-black tracking-[0.12em] text-white shadow-[0_0_34px_rgba(217,190,119,0.24)] transition active:scale-[0.98] disabled:opacity-45"
-                disabled={isReading || !profile.name.trim() || !birthDateValid}
-                onClick={runReading}
-                type="button"
-              >
-                {isReading ? "猫星盤を展開中..." : todayDone ? "今日の占譜を読み直す" : "今日の占譜を開く"}
-              </button>
+                <button
+                  className={
+                    canRunReading
+                      ? "mt-4 w-full rounded-2xl border border-amber-100/40 bg-gradient-to-r from-[#2d174f] via-[#703769] to-[#c59b4d] px-5 py-4 text-base font-black tracking-[0.1em] text-white shadow-[0_0_34px_rgba(217,190,119,0.26)] transition active:scale-[0.98]"
+                      : "mt-4 w-full rounded-2xl border border-white/10 bg-white/[0.055] px-5 py-4 text-base font-black tracking-[0.06em] text-white/38 shadow-none"
+                  }
+                  disabled={!canRunReading}
+                  onClick={runReading}
+                  type="button"
+                >
+                  <span className="block text-[10px] font-black text-amber-100/58">Step 4</span>
+                  {readingButtonLabel}
+                </button>
+              </div>
             </div>
           </section>
 
@@ -1855,6 +1985,44 @@ export function SeriousOracleApp() {
             <ReadingResult reading={reading} onSave={saveReading} />
           ) : null}
 
+          <section className="px-4 pb-5 pt-2">
+            <div className="grid gap-2">
+              {[
+                "恋愛・仕事・人間関係・自分自身を、今日の流れとして占えます。",
+                "鑑定結果は保存して、あとから占い帳で読み返せます。",
+                "結果はエンタメ用途です。重大な判断は現実の情報と専門家の助言を大切にしてください。",
+              ].map((text) => (
+                <div className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-xs font-bold leading-6 text-violet-50/68" key={text}>
+                  {text}
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {history.length > 0 ? (
+            <section className="px-4 pb-5">
+              <div className="rounded-[22px] border border-cyan-100/14 bg-cyan-100/[0.045] p-4">
+                <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/52">YOUR ORACLE LOG</p>
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  <div className="rounded-2xl border border-white/10 bg-black/24 p-3 text-center">
+                    <p className="text-[10px] font-bold text-white/38">連続鑑定</p>
+                    <p className="mt-1 text-lg font-black text-amber-100">{streak.streak}</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/24 p-3 text-center">
+                    <p className="text-[10px] font-bold text-white/38">鑑定履歴</p>
+                    <p className="mt-1 text-lg font-black text-cyan-100">{history.length}</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/24 p-3 text-center">
+                    <p className="text-[10px] font-bold text-white/38">お気に入り</p>
+                    <p className="mt-1 text-lg font-black text-fuchsia-100">{favoriteCount}</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          ) : null}
+
+          <CatStarRanking dateKey={todayKey} />
+
           <AdBanner variant="archive-inline" />
           <OracleBook items={history} todayKey={todayKey} onToggleFavorite={toggleFavorite} />
           <TarotCatalog />
@@ -1863,28 +2031,27 @@ export function SeriousOracleApp() {
             <div className="relative overflow-hidden rounded-[24px] border border-amber-100/22 bg-amber-100/[0.075] p-4 shadow-[0_18px_54px_rgba(217,190,119,0.08)]">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(250,204,21,0.16),transparent_34%),radial-gradient(circle_at_90%_90%,rgba(88,28,135,0.24),transparent_42%)]" />
               <div className="relative">
-              <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-amber-100/65">GUIDE / LIBRARY</p>
-              <h2 className="mt-1 text-xl font-black text-white">迷ったらガイドへ</h2>
-              <p className="mt-1 text-xs font-bold leading-6 text-amber-50/72">使い方、保存履歴、図鑑、読み物への入口をまとめています。</p>
-              <div className="mt-3 grid gap-2">
-                {[
-                  { href: "/guide", label: "ガイド", caption: "はじめての方はこちら" },
-                  { href: "/tarot", label: "猫タロット図鑑", caption: "大アルカナ22枚の意味を読む" },
-                  { href: "/zodiac", label: "12星座猫図鑑", caption: "星座ごとの黒猫アイコンと特徴" },
-                  { href: "/journal", label: "占い帳の使い方", caption: "保存履歴を毎日の振り返りへ" },
-                  { href: "/articles", label: "読み物アーカイブ", caption: "猫タロットと占いの向き合い方" },
-                  { href: "/how-to-use", label: "詳しい使い方", caption: "操作手順とFAQを確認する" },
-                ].map((item) => (
-                  <a
-                    className="rounded-2xl border border-amber-100/24 bg-black/34 px-3 py-3 text-left text-xs font-black text-amber-50 shadow-[0_0_18px_rgba(217,190,119,0.08)] transition active:scale-[0.98]"
-                    href={item.href}
-                    key={item.href}
-                  >
-                    <span className="block text-sm">{item.label}</span>
-                    <span className="mt-1 block font-bold leading-5 text-violet-50/56">{item.caption}</span>
-                  </a>
-                ))}
-              </div>
+                <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-amber-100/65">GUIDE / LIBRARY</p>
+                <h2 className="mt-1 text-xl font-black text-white">次に読む・見る</h2>
+                <p className="mt-1 text-xs font-bold leading-6 text-amber-50/72">占いを深く楽しむための図鑑とガイドです。</p>
+                <div className="mt-3 grid gap-2">
+                  {[
+                    { href: "/tarot", label: "猫タロット図鑑", caption: "22枚の猫タロットを読む" },
+                    { href: "/zodiac", label: "12星座猫図鑑", caption: "星座ごとの猫モチーフを見る" },
+                    { href: "/guide", label: "ガイド", caption: "使い方と楽しみ方を確認する" },
+                    { href: "/journal", label: "占い帳", caption: "保存履歴の使い方を読む" },
+                    { href: "/articles", label: "読み物アーカイブ", caption: "猫タロットと占いの読み物" },
+                  ].map((item) => (
+                    <a
+                      className="rounded-2xl border border-amber-100/24 bg-black/34 px-3 py-3 text-left text-xs font-black text-amber-50 shadow-[0_0_18px_rgba(217,190,119,0.08)] transition active:scale-[0.98]"
+                      href={item.href}
+                      key={item.href}
+                    >
+                      <span className="block text-sm">{item.label}</span>
+                      <span className="mt-1 block font-bold leading-5 text-violet-50/56">{item.caption}</span>
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </section>
@@ -1897,68 +2064,15 @@ export function SeriousOracleApp() {
                 <h2 className="mt-2 font-serif text-2xl font-bold text-white">猫星ミラージュ占譜とは</h2>
                 <div className="mt-3 space-y-3 text-sm leading-7 text-violet-50/76">
                   <p>
-                    猫星ミラージュ占譜は、姓名判断の数字、星の暦、猫をモチーフにしたタロットカードを組み合わせて、今日の気分や行動のヒントを読み解くエンタメ占いです。名前や生年月日から導いた象徴と、その日に開かれた三枚のカードを重ねることで、恋愛、仕事、人間関係、自分自身の整え方を少し違う角度から眺められるように作っています。
+                    猫星ミラージュ占譜は、姓名判断の数字、星の暦、猫をモチーフにしたタロットカードを組み合わせて、今日の気分や行動のヒントを読み解くエンタメ占いです。
                   </p>
                   <p>
-                    結果は未来を断定するものではなく、朝の気分整理、迷った時のメモ、行動を始めるきっかけとして楽しむためのものです。読んでいて心に残った言葉があれば、今日の小さな合図として受け取ってください。ただし、医療、法律、投資、契約、進路など人生上の重大な判断は、この占いだけを根拠にせず、必要に応じて専門家へ相談してください。
+                    未来を断定するものではなく、朝の気分整理、迷った時のメモ、行動を始めるきっかけとして楽しむためのものです。
                   </p>
                 </div>
               </div>
             </div>
           </section>
-
-          <section className="px-4 pb-8">
-            <div className="grid gap-3">
-              {[
-                {
-                  title: "姓名判断の見方",
-                  body: "名前から導く数は、性格を決めつけるものではなく、言葉の響きや印象を整理するための象徴として扱っています。自分らしい選び方、無理をしやすい場面、気持ちが整いやすい方向を知るための小さな地図として読んでください。",
-                },
-                {
-                  title: "星の暦の使い方",
-                  body: "星の暦は、その日の空気感を読むための背景です。強く進めたい日、少し整えたい日、人との距離を見直したい日など、日々のリズムを意識することで、予定や気分に余白を作りやすくなります。",
-                },
-                {
-                  title: "猫タロットの読み方",
-                  body: "三枚の猫タロットは、過去・現在・近未来の流れを物語のようにつなげて表示します。カードの意味を正解として受け取るより、今の自分に引っかかる言葉や絵柄を見つけることを大切にしています。",
-                },
-                {
-                  title: "毎日の気分整理に",
-                  body: "朝に一度引いて今日の合図を決めたり、夜に保存した鑑定を読み返して一日を振り返ったりできます。迷いが大きい時ほど、占いだけで決めず、現実の情報や信頼できる人の意見と合わせて使ってください。",
-                },
-              ].map((item) => (
-                <article className="rounded-[22px] border border-white/10 bg-white/[0.045] p-4" key={item.title}>
-                  <h3 className="font-serif text-lg font-bold text-amber-50">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-violet-50/72">{item.body}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          {false && history.length > 1 ? (
-            <section className="px-4 pb-8">
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
-                <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/55">READING ARCHIVE</p>
-                <h2 className="mt-1 text-lg font-black text-white">過去の占譜</h2>
-                <div className="mt-3 space-y-2">
-                  {history.slice(1, 8).map((item) => (
-                    <button
-                      className="w-full rounded-2xl border border-white/10 bg-black/20 p-3 text-left active:scale-[0.99]"
-                      key={item.id}
-                      onClick={() => setReading(item)}
-                      type="button"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="truncate text-sm font-black text-white">{item.themeLabel}</p>
-                        <p className="text-[10px] font-bold text-white/38">{item.dateKey}</p>
-                      </div>
-                      <p className="mt-1 line-clamp-1 text-xs text-white/48">{item.headline}</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </section>
-          ) : null}
 
           <footer className="px-5 pb-8 text-center text-[11px] leading-5 text-white/34">
             <p>この鑑定はエンタメ用途の占いコンテンツです。医療・法律・金融などの重要な判断は専門家へご相談ください。</p>
