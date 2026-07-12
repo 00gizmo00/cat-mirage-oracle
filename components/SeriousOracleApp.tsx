@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AdBanner } from "./AdBanner";
+import { AffiliateDisclosure } from "./AffiliateDisclosure";
 import { ZodiacCatIcon } from "./ZodiacCatIcon";
 import {
   createReading,
@@ -19,7 +20,6 @@ const profileStorageKey = "serious-oracle-profile";
 const readingsStorageKey = "serious-oracle-readings";
 const streakStorageKey = "serious-oracle-streak";
 const maxSavedReadings = 20;
-const isAdsenseReviewMode = process.env.NEXT_PUBLIC_ADSENSE_REVIEW_MODE === "true";
 
 type DailyStreak = {
   lastDateKey: string;
@@ -2080,10 +2080,8 @@ export function SeriousOracleApp() {
 
           <footer className="px-5 pb-8 text-center text-[11px] leading-5 text-white/34">
             <p>この鑑定はエンタメ用途の占いコンテンツです。医療・法律・金融などの重要な判断は専門家へご相談ください。</p>
-            {!isAdsenseReviewMode ? (
-              <p className="mt-2">広告枠は将来のAdSense/AdMob/リワード広告差し替えを想定したダミー表示です。</p>
-            ) : null}
           </footer>
+          <AffiliateDisclosure compact />
         </div>
       </div>
     </main>

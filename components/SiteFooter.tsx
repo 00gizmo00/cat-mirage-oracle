@@ -3,12 +3,13 @@ import Link from "next/link";
 const footerLinks = [
   { href: "/about", label: "このサイトについて" },
   { href: "/guide", label: "ガイド" },
-  { href: "/tarot", label: "猫タロット解説" },
+  { href: "/articles", label: "読み物アーカイブ" },
+  { href: "/tarot", label: "猫タロット図鑑" },
   { href: "/zodiac", label: "12星座猫図鑑" },
-  { href: "/journal", label: "占い帳について" },
-  { href: "/contact", label: "お問い合わせ" },
+  { href: "/journal", label: "占い帳" },
   { href: "/privacy", label: "プライバシーポリシー" },
   { href: "/terms", label: "利用規約" },
+  { href: "/contact", label: "お問い合わせ" },
 ];
 
 export function SiteFooter() {
@@ -22,6 +23,7 @@ export function SiteFooter() {
         ))}
       </nav>
       <p className="mt-4 leading-5">猫星ミラージュ占譜はエンタメ用途の占いWebアプリです。</p>
+      <p className="mt-1 leading-5">一部ページにはPR・アフィリエイトリンクを掲載する場合があります。</p>
     </footer>
   );
 }
