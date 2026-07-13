@@ -3,7 +3,6 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { siteConfig } from "@/lib/siteConfig";
 import "./globals.css";
 
-const ogImage = "/opengraph-image";
 const logoImage = "/brand/cat-mirage-logo.png";
 
 export const metadata: Metadata = {
@@ -14,31 +13,6 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: siteConfig.name,
-    description: siteConfig.description,
-    url: "/",
-    siteName: siteConfig.name,
-    locale: "ja_JP",
-    type: "website",
-    images: [
-      {
-        url: ogImage,
-        width: 1200,
-        height: 630,
-        alt: `${siteConfig.name}の共有画像`,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [ogImage],
-  },
   icons: {
     icon: logoImage,
     apple: logoImage,

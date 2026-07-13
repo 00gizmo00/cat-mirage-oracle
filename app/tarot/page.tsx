@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { ContentPage } from "@/components/ContentPage";
+import { createPageMetadata } from "@/lib/seo";
 import { tarotDetails } from "@/lib/tarotDetails";
 
-export const metadata: Metadata = {
-  title: "猫タロット大アルカナ解説",
-  description: "猫星ミラージュ占譜で使う22枚の猫タロット大アルカナの意味と読み方を紹介します。",
-};
+export const metadata = createPageMetadata({
+  title: "猫タロット大アルカナ図鑑",
+  description: "猫をモチーフにした大アルカナ22枚の意味、正位置・逆位置、恋愛や仕事での読み方を一覧で確認できます。",
+  path: "/tarot",
+});
 
 const cards = [
   "愚者: まだ形になっていない始まり。計画よりも直感が先に動く日を示します。猫が崖の先で空を見上げているなら、無謀さではなく、未知へ向かう軽さを読んでください。",

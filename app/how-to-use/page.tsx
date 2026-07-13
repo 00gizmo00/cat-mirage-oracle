@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
 import { ContentPage } from "@/components/ContentPage";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "使い方",
-  description: "猫星ミラージュ占譜の入力、鑑定、保存、SNS共有、占い帳の使い方を説明します。",
-};
+export const metadata = createPageMetadata({
+  title: "操作・保存・共有の詳しい使い方",
+  description: "名前と生年月日の入力、鑑定、保存、占い帳、SNS共有、画像保存、FAQまで操作方法を詳しく説明します。",
+  path: "/how-to-use",
+});
 
 export default function HowToUsePage() {
   return (

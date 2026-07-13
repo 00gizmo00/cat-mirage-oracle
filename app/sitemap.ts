@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { articles } from "@/lib/articles";
-import { siteConfig } from "@/lib/siteConfig";
+import { absoluteUrl } from "@/lib/seo";
 import { tarotDetails } from "@/lib/tarotDetails";
 import { zodiacSigns } from "@/lib/zodiac";
 
@@ -41,7 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [...staticRoutes, ...articleRoutes, ...tarotRoutes, ...zodiacRoutes];
 
   return routes.map((route) => ({
-    url: `${siteConfig.url}${route.path}`,
+    url: absoluteUrl(route.path || "/"),
     lastModified: new Date(),
     changeFrequency: route.changeFrequency,
     priority: route.priority,

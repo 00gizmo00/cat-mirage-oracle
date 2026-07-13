@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ZodiacCatIcon } from "@/components/ZodiacCatIcon";
+import { createPageMetadata } from "@/lib/seo";
 import { zodiacSigns } from "@/lib/zodiac";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "12星座猫図鑑",
-  description: "猫星ミラージュ占譜の12星座猫アイコンと、星座ごとの基本性格・恋愛・仕事・人間関係を紹介します。",
-  alternates: { canonical: "/zodiac" },
-};
+  description: "12星座を黒猫モチーフで読み解く図鑑です。基本性格、恋愛、仕事、人間関係、ラッキーアイテムを確認できます。",
+  path: "/zodiac",
+});
 
 export default function ZodiacIndexPage() {
   return (

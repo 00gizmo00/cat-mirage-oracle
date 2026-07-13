@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
-import { siteConfig } from "@/lib/siteConfig";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "プライバシーポリシー",
-  description: `${siteConfig.name}のプライバシーポリシーです。`,
-  alternates: { canonical: "/privacy" },
-};
+  description: "localStorageによる保存履歴、Cookie、アクセス解析、アフィリエイトリンク、お問い合わせ情報の扱いを説明します。",
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (

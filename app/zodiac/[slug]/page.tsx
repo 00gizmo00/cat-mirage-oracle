@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ContentPage } from "@/components/ContentPage";
 import { getRelatedArticles } from "@/lib/articles";
+import { createPageMetadata } from "@/lib/seo";
 import { getRelatedZodiacSigns, getZodiacSign, zodiacSigns } from "@/lib/zodiac";
 
 type ZodiacPageProps = {
@@ -17,22 +18,12 @@ export async function generateMetadata({ params }: ZodiacPageProps): Promise<Met
   const sign = getZodiacSign(slug);
   if (!sign) return {};
 
-  return {
-    title: `${sign.name} ${sign.english} | 12星座猫図鑑`,
+  return createPageMetadata({
+    title: `${sign.name} ${sign.english}｜12星座猫図鑑`,
     description: `${sign.name}の基本性格、猫星から見た特徴、恋愛傾向、仕事傾向、人間関係、ラッキーアイテムを紹介します。`,
-    alternates: { canonical: `/zodiac/${sign.slug}` },
-    openGraph: {
-      title: `${sign.name} | 猫星ミラージュ占譜`,
-      description: `${sign.catFeature} ${sign.personality}`,
-      images: ["/opengraph-image"],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${sign.name} | 猫星ミラージュ占譜`,
-      description: `${sign.catFeature} ${sign.personality}`,
-      images: ["/opengraph-image"],
-    },
-  };
+    path: `/zodiac/${sign.slug}`,
+    image: sign.imageSrc,
+  });
 }
 
 export default async function ZodiacDetailPage({ params }: ZodiacPageProps) {
@@ -44,6 +35,11 @@ export default async function ZodiacDetailPage({ params }: ZodiacPageProps) {
     <ContentPage
       title={`${sign.name} ${sign.english}`}
       lead={`${sign.name}は、猫星ミラージュ占譜では「${sign.motif}」をまとった黒猫として読みます。星座の性質を未来の断定ではなく、日々の気分整理や行動のヒントとして受け取ってください。`}
+      breadcrumbs={[
+        { href: "/", label: "トップ" },
+        { href: "/zodiac", label: "12星座猫図鑑" },
+        { href: `/zodiac/${sign.slug}`, label: sign.name },
+      ]}
       relatedLinks={[
         ...getRelatedZodiacSigns(sign.slug, 3),
         { href: "/zodiac", label: "12星座猫図鑑" },

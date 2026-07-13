@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
-import { siteConfig } from "@/lib/siteConfig";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "利用規約",
-  description: `${siteConfig.name}の利用規約です。`,
-  alternates: { canonical: "/terms" },
-};
+  description: "猫星ミラージュ占譜の利用条件、禁止事項、保存機能、PRリンク、著作権、免責事項を定めています。",
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (

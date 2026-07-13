@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
-import { siteConfig } from "@/lib/siteConfig";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "お問い合わせ",
-  description: `${siteConfig.name}のお問い合わせページです。`,
-  alternates: { canonical: "/contact" },
-};
+  description: "不具合報告、コンテンツ、権利関係、広告掲載、その他サービスに関するお問い合わせ窓口です。",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

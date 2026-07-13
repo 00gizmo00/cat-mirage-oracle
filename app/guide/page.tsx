@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { createPageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/siteConfig";
 
-export const metadata: Metadata = {
-  title: "ガイド",
-  description: "猫星ミラージュ占譜の使い方、今日の猫星ランキング、猫タロット占い、占い帳、図鑑、読み物アーカイブへの入口です。",
-  alternates: { canonical: "/guide" },
-};
+export const metadata = createPageMetadata({
+  title: "はじめての方へ・使い方ガイド",
+  description: "初めて猫星ミラージュ占譜を使う方向けに、占いの流れ、猫星ランキング、図鑑、占い帳、読み物への入口をまとめます。",
+  path: "/guide",
+});
 
 const featureLinks = [
   {

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { absoluteUrl } from "@/lib/seo";
 import { siteConfig } from "@/lib/siteConfig";
 
 type ContentSection = {
@@ -10,16 +11,50 @@ type ContentPageProps = {
   title: string;
   lead: string;
   sections: ContentSection[];
+  breadcrumbs?: { href: string; label: string }[];
   relatedLinks?: { href: string; label: string }[];
 };
 
-export function ContentPage({ title, lead, sections, relatedLinks = [] }: ContentPageProps) {
+export function ContentPage({ title, lead, sections, breadcrumbs = [], relatedLinks = [] }: ContentPageProps) {
+  const breadcrumbJsonLd =
+    breadcrumbs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: breadcrumbs.map((item, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: item.label,
+            item: absoluteUrl(item.href),
+          })),
+        }
+      : null;
+
   return (
     <main className="min-h-svh px-4 py-8 text-white">
+      {breadcrumbJsonLd ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      ) : null}
       <article className="mx-auto max-w-[760px] overflow-hidden rounded-[28px] border border-white/10 bg-[#070612]/92 shadow-[0_24px_80px_rgba(0,0,0,0.48)]">
         <header className="relative border-b border-amber-100/12 px-5 py-7">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(217,190,119,0.16),transparent_34%),radial-gradient(circle_at_18%_86%,rgba(88,28,135,0.2),transparent_42%)]" />
           <div className="relative">
+            {breadcrumbs.length > 0 ? (
+              <nav className="mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold text-white/46" aria-label="パンくず">
+                {breadcrumbs.map((item, index) => (
+                  <span className="flex items-center gap-2" key={item.href}>
+                    {index > 0 ? <span className="text-amber-100/34">/</span> : null}
+                    {index === breadcrumbs.length - 1 ? (
+                      <span className="text-amber-50/78">{item.label}</span>
+                    ) : (
+                      <Link className="underline-offset-4 hover:text-amber-100 hover:underline" href={item.href}>
+                        {item.label}
+                      </Link>
+                    )}
+                  </span>
+                ))}
+              </nav>
+            ) : null}
             <p className="font-serif text-[10px] font-bold tracking-[0.34em] text-amber-100/58">{siteConfig.name}</p>
             <h1 className="mt-2 font-serif text-3xl font-bold leading-tight">{title}</h1>
             <p className="mt-3 text-sm leading-7 text-violet-50/72">{lead}</p>

@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
 import { ContentPage } from "@/components/ContentPage";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "猫星ミラージュ占譜について",
-  description: "姓名判断、星の暦、猫タロットを組み合わせたエンタメ占いアプリの考え方と楽しみ方を紹介します。",
-};
+  description: "猫星ミラージュ占譜の目的、猫タロットを使う理由、保存・共有、PRリンクの考え方を説明します。",
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

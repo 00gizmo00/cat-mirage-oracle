@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ContentPage } from "@/components/ContentPage";
 import { getRelatedArticles } from "@/lib/articles";
+import { createPageMetadata } from "@/lib/seo";
 import { getRelatedTarotCards, getTarotDetail, tarotDetails } from "@/lib/tarotDetails";
 
 type TarotPageProps = {
@@ -17,11 +18,12 @@ export async function generateMetadata({ params }: TarotPageProps): Promise<Meta
   const card = getTarotDetail(slug);
   if (!card) return {};
 
-  return {
-    title: `${card.arcana} ${card.english} | 猫タロット大アルカナ`,
+  return createPageMetadata({
+    title: `${card.arcana} ${card.english}｜猫タロット大アルカナ`,
     description: `猫タロット大アルカナ「${card.arcana}」の意味、正位置、逆位置、恋愛、仕事、人間関係、自己成長での読み方を解説します。`,
-    alternates: { canonical: `/tarot/${card.slug}` },
-  };
+    path: `/tarot/${card.slug}`,
+    image: card.imageSrc,
+  });
 }
 
 export default async function TarotDetailPage({ params }: TarotPageProps) {
@@ -38,6 +40,11 @@ export default async function TarotDetailPage({ params }: TarotPageProps) {
     <ContentPage
       title={`${card.arcana} ${card.english}`}
       lead={`${card.summary} 猫星ミラージュ占譜では、このカードを未来の断定ではなく、今日の気分や行動を整えるための象徴として読みます。`}
+      breadcrumbs={[
+        { href: "/", label: "トップ" },
+        { href: "/tarot", label: "猫タロット図鑑" },
+        { href: `/tarot/${card.slug}`, label: card.arcana },
+      ]}
       sections={[
         {
           title: "カード概要",

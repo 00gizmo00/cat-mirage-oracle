@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
-import { siteConfig } from "@/lib/siteConfig";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "免責事項",
-  description: `${siteConfig.name}の免責事項です。`,
-  alternates: { canonical: "/disclaimer" },
-};
+  description: "猫星ミラージュ占譜の鑑定結果、保存データ、PRリンク、外部サイト利用に関する免責事項を説明します。",
+  path: "/disclaimer",
+});
 
 export default function DisclaimerPage() {
   return (

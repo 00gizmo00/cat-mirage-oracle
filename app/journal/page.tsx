@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
 import { ContentPage } from "@/components/ContentPage";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "占い帳と毎日の振り返り",
-  description: "猫星ミラージュ占譜の保存履歴、占い帳、毎日の振り返り方について説明します。",
-};
+export const metadata = createPageMetadata({
+  title: "占い帳・保存履歴の使い方",
+  description: "保存した鑑定を後から読み返し、気分や行動の変化を振り返る猫星占い帳の使い方を紹介します。",
+  path: "/journal",
+});
 
 export default function JournalPage() {
   return (

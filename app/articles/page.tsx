@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { articles } from "@/lib/articles";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "読み物アーカイブ",
-  description:
-    "猫星ミラージュ占譜の猫タロット、占い結果、占い帳、日常での活かし方に関する読み物アーカイブです。",
-};
+export const metadata = createPageMetadata({
+  title: "猫タロットと占いの読み物",
+  description: "猫タロットの考え方、占い結果との向き合い方、占い帳の習慣化など、日常で読み返せる記事をまとめています。",
+  path: "/articles",
+});
 
 export default function ArticlesPage() {
   return (
