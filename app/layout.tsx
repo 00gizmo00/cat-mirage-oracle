@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  verification: {
+    google: siteConfig.googleSiteVerification,
+  },
 };
 
 export const viewport: Viewport = {
