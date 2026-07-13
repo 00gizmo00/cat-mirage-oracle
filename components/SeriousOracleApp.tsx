@@ -1755,8 +1755,6 @@ function ReadingResult({ reading, onSave }: { reading: SeriousReading; onSave: (
         </p>
       </section>
 
-      <AdBanner variant="result-inline" />
-
       <SharePreview reading={reading} />
 
       <section className="rounded-[22px] border border-white/10 bg-white/[0.05] p-4">
