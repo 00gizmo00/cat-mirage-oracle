@@ -784,6 +784,42 @@ function TarotCard({ card }: { card: TarotDraw }) {
   );
 }
 
+function CompactDailyTarotFeature({ dateKey }: { dateKey: string }) {
+  const daily = useMemo(() => getDailyTarotCard(dateKey), [dateKey]);
+
+  const scrollToForm = () => {
+    document.getElementById("oracle-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <section className="px-4 pb-3">
+      <div className="relative overflow-hidden rounded-[24px] border border-amber-100/22 bg-[#090817]/92 p-3 shadow-[0_18px_54px_rgba(0,0,0,0.36)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_28%_0%,rgba(217,190,119,0.18),transparent_34%),radial-gradient(circle_at_88%_72%,rgba(125,211,252,0.12),transparent_42%)]" />
+        <div className="relative grid grid-cols-[5.8rem_minmax(0,1fr)] gap-3">
+          <div>
+            <div className="rounded-[14px] border border-amber-100/28 bg-black/38 p-1 shadow-[0_0_22px_rgba(217,190,119,0.12)]">
+              <TarotCard card={daily.card} />
+            </div>
+          </div>
+          <div className="min-w-0">
+            <p className="font-serif text-[10px] font-bold tracking-[0.3em] text-amber-100/58">TODAY'S CARD</p>
+            <h2 className="mt-1 font-serif text-xl font-bold leading-tight text-white">今日の一枚</h2>
+            <p className="mt-1 truncate text-sm font-black text-amber-50">{daily.name}</p>
+            <p className="mt-2 line-clamp-2 text-xs font-bold leading-5 text-violet-50/72">{daily.message}</p>
+            <button
+              className="mt-3 w-full rounded-2xl border border-amber-100/38 bg-gradient-to-r from-[#2d174f] via-[#703769] to-[#c59b4d] px-4 py-3 text-sm font-black text-white shadow-[0_0_22px_rgba(217,190,119,0.18)] transition active:scale-[0.98]"
+              onClick={scrollToForm}
+              type="button"
+            >
+              詳しく占う
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function DailyTarotFeature({ dateKey }: { dateKey: string }) {
   const daily = useMemo(() => getDailyTarotCard(dateKey), [dateKey]);
 
@@ -1719,9 +1755,9 @@ function ReadingResult({ reading, onSave }: { reading: SeriousReading; onSave: (
         </p>
       </section>
 
-      <SharePreview reading={reading} />
-
       <AdBanner variant="result-inline" />
+
+      <SharePreview reading={reading} />
 
       <section className="rounded-[22px] border border-white/10 bg-white/[0.05] p-4">
         <div className="grid grid-cols-2 gap-2">
@@ -1865,10 +1901,6 @@ export function SeriousOracleApp() {
       <div className="relative min-h-svh w-full max-w-[430px] bg-[#050514] shadow-[0_0_80px_rgba(0,0,0,0.65)] sm:my-6 sm:min-h-[880px] sm:overflow-hidden sm:rounded-[36px] sm:border sm:border-white/10">
         <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_6%,rgba(109,40,217,0.18),transparent_30rem),radial-gradient(circle_at_50%_74%,rgba(217,190,119,0.08),transparent_19rem),#03030b]" />
         <div className="relative z-10">
-          <div className="sticky top-0 z-30">
-            <AdBanner variant="top-sticky" />
-          </div>
-
           <header className="px-5 pb-3 pt-4 text-center">
             <div className="mx-auto mb-3 w-[min(54vw,184px)] overflow-hidden rounded-full border border-amber-100/24 bg-black/35 p-1.5 shadow-[0_0_42px_rgba(217,190,119,0.16)]">
               <img
@@ -1887,7 +1919,14 @@ export function SeriousOracleApp() {
             </p>
           </header>
 
-          <DailyTarotFeature dateKey={todayKey} />
+          <CompactDailyTarotFeature dateKey={todayKey} />
+
+          <section className="px-4 pb-3">
+            <div className="rounded-[20px] border border-cyan-100/16 bg-cyan-100/[0.055] px-4 py-3 text-xs font-bold leading-6 text-cyan-50/78">
+              <p>入力情報は鑑定にのみ使用します。</p>
+              <p>履歴は端末内に保存されます。</p>
+            </div>
+          </section>
 
           <section className="mt-1 px-4" id="oracle-form">
             <div className="relative overflow-hidden rounded-[28px] border border-cyan-100/20 bg-[#08121e]/92 p-4 shadow-[0_18px_58px_rgba(0,0,0,0.34)] scroll-mt-4">
@@ -1895,9 +1934,6 @@ export function SeriousOracleApp() {
               <div className="relative">
                 <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/58">PERSONAL ORACLE</p>
                 <h2 className="mt-1 text-2xl font-black text-white">あなたの今日を読む</h2>
-                <p className="mt-2 rounded-2xl border border-cyan-100/14 bg-cyan-100/[0.055] p-3 text-xs font-bold leading-6 text-cyan-50/66">
-                  名前と生年月日は鑑定にのみ使います。履歴は端末内に保存され、外部送信されません。
-                </p>
 
                 <div className="mt-4 grid gap-3">
                   <label className="grid gap-1">
@@ -1989,7 +2025,7 @@ export function SeriousOracleApp() {
             <ReadingResult reading={reading} onSave={saveReading} />
           ) : null}
 
-          <section className="px-4 pb-5 pt-2">
+          <section className="hidden px-4 pb-5 pt-2">
             <div className="grid gap-2">
               {[
                 "恋愛・仕事・人間関係・自分自身を、今日の流れとして占えます。",
@@ -2004,7 +2040,7 @@ export function SeriousOracleApp() {
           </section>
 
           {history.length > 0 ? (
-            <section className="px-4 pb-5">
+            <section className="hidden px-4 pb-5">
               <div className="rounded-[22px] border border-cyan-100/14 bg-cyan-100/[0.045] p-4">
                 <p className="font-serif text-[10px] font-bold tracking-[0.28em] text-cyan-100/52">YOUR ORACLE LOG</p>
                 <div className="mt-3 grid grid-cols-3 gap-2">
@@ -2027,8 +2063,6 @@ export function SeriousOracleApp() {
 
           <CatStarRanking dateKey={todayKey} />
 
-          <AdBanner variant="archive-inline" />
-          <OracleBook items={history} todayKey={todayKey} onToggleFavorite={toggleFavorite} />
           <TarotCatalog />
 
           <section className="px-4 pb-8">
@@ -2059,6 +2093,9 @@ export function SeriousOracleApp() {
               </div>
             </div>
           </section>
+
+          <OracleBook items={history} todayKey={todayKey} onToggleFavorite={toggleFavorite} />
+          <AdBanner variant="archive-inline" />
 
           <section className="px-4 pb-8">
             <div className="relative overflow-hidden rounded-[24px] border border-amber-100/16 bg-white/[0.045] p-5 shadow-[0_18px_52px_rgba(0,0,0,0.32)]">
